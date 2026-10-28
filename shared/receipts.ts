@@ -28,6 +28,7 @@ export const RECEIPTS: readonly Receipt[] = [
   { id: 'electrothon-7', label: 'Electrothon 7.0 site', kind: 'public', url: 'https://electrothon-7-0.vercel.app' },
   { id: 'spec', label: 'SPEC, NIT Hamirpur', kind: 'public', url: 'https://spec.nith.ac.in' },
   { id: 'dsa-sheet', label: 'DSA revision sheet', kind: 'public', url: 'https://dsa-revision-lime.vercel.app' },
+  { id: 'this-repo', label: 'Source of this site', kind: 'public', url: `${GH}/whisper_portfolio` },
   { id: 'raw-tape', label: 'Raw voice transcripts', kind: 'public', url: '#tape', note: 'unedited Wispr Flow takes on this page' },
   { id: 'cgpa', label: 'CGPA 8.94', kind: 'self-reported', note: 'transcript on request' },
   { id: 'jee', label: 'JEE — 99th percentile', kind: 'self-reported', note: 'scorecard on request' },
