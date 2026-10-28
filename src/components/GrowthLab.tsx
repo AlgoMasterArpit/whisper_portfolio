@@ -14,13 +14,13 @@ const EVIDENCE = [
   {
     label: 'Product loop',
     title: '500+ participants on a dashboard I built',
-    body: 'Real-time infra monitoring for Electrothon 8.0. Users broke it, gave feedback, we shipped fixes mid-event.',
+    body: 'Real-time infra monitoring for Electrothon 8.0. Participants gave feedback; we improved and optimised the platform from it.',
     receipts: ['electrothon-8-repo'],
   },
   {
     label: 'Funnel',
     title: 'My own outreach pipeline',
-    body: 'Weekly cold outreach to recruiters found on LinkedIn and hiring platforms, every reply tracked. My first funnel — built for myself.',
+    body: 'Weekly cold outreach to recruiters found on LinkedIn and hiring platforms, handling the replies myself. My first funnel — built for myself.',
     receipts: ['linkedin'],
   },
 ] as const;
