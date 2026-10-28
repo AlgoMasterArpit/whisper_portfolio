@@ -10,7 +10,6 @@ export function Museum() {
   const [choices, setChoices] = useState<(0 | 1)[]>([]);
   const [index, setIndex] = useState(0);
   const [dark, setDark] = useState(false);
-  const sectionRef = useRef<HTMLElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const moved = useRef(false);
 
@@ -52,7 +51,6 @@ export function Museum() {
   return (
     <section
       id="museum"
-      ref={sectionRef}
       className={`section museum ${dark ? 'is-dark' : ''}`}
       onPointerMove={track}
       onPointerLeave={() => setDark(false)}
