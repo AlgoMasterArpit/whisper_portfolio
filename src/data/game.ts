@@ -16,7 +16,7 @@ export const ROUNDS: readonly Round[] = [
       { text: 'Legal Sarthi ranks precedents from Indian Kanoon', receipt: 'legal-sarthi' },
       { text: 'Built a dashboard 500+ hackers used', receipt: 'electrothon-8' },
     ],
-    why: 'I have never run paid ads. It is on my learning list, not my resume.',
+    why: 'There is no receipt for paid ads anywhere on this page — so I don’t claim it.',
   },
   {
     claims: [
