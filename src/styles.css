@@ -1640,23 +1640,24 @@ button {
 }
 
 .mishear__said s {
+  position: relative;
+  padding: 0 4px;
   text-decoration: none;
-  background: linear-gradient(transparent 55%, color-mix(in srgb, var(--highlight) 75%, transparent) 55% 90%, transparent 90%);
-  color: var(--text-on-ink);
+  background: var(--highlight);
+  color: var(--ink);
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
-  position: relative;
 }
 
 .mishear__said s::after {
   content: '';
   position: absolute;
-  left: 0;
-  right: 0;
-  top: 55%;
-  height: 2px;
+  left: 2px;
+  right: 2px;
+  top: 54%;
+  height: 1.5px;
   background: var(--stamp);
-  transform: rotate(-2deg);
+  transform: rotate(-1.5deg);
 }
 
 .mishear__shipped {
