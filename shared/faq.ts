@@ -157,14 +157,77 @@ export const INTENTS: readonly Intent[] = [
   },
   {
     id: 'this-site',
-    keywords: ['this site', 'built this', 'how was this made', 'portfolio', 'receipts', 'tech stack'],
+    keywords: ['this site', 'built this', 'how was this made', 'portfolio', 'receipts'],
     answer:
       'Every part of this site was spoken, not typed — Wispr Flow dictating into Claude Code. The raw takes, mis-hearings included, are further down the page.',
     receipts: ['raw-tape', 'this-repo'],
   },
   {
+    id: 'skills',
+    keywords: ['skills', 'skill', 'tech stack', 'stack', 'technologies', 'languages do you know', 'tools', 'react', 'python', 'fastapi', 'backend', 'frontend', 'full stack', 'aws', 'docker'],
+    answer:
+      "Full-stack. Languages: C++, Python, JavaScript, SQL, and Kotlin for NOVA. Frontend: React, Redux Toolkit, Tailwind. Backend: FastAPI, Node, Express, PostgreSQL with SQLAlchemy and Alembic, JWT auth. Cloud: AWS EC2 and Secrets Manager, Docker, GitHub Actions, Vercel. AI: Groq/Llama, OpenAI API, sentence-transformers, Claude Code.",
+    receipts: ['github', 'legal-sarthi', 'seniorsays', 'nova'],
+  },
+  {
+    id: 'projects',
+    keywords: ['projects', 'project', 'built', 'build', 'made', 'portfolio projects', 'kya banaya'],
+    answer:
+      'NOVA, my Hinglish Android voice assistant. Legal Sarthi, an AI assistant for lawyers. SeniorSays, a placement-prep platform for juniors. Kin, an Alexa+ MCP server for parents who live alone. MeterMind, an agent that reads meters from photos. Ask me about any one of them.',
+    receipts: ['nova', 'legal-sarthi', 'seniorsays', 'kin', 'metermind'],
+  },
+  {
+    id: 'experience',
+    keywords: ['experience', 'worked', 'work experience', 'job', 'jobs', 'roles', 'companies'],
+    answer:
+      "I'm a Full Stack Engineer Intern at Carboledger, building React screens for the Smart Balance revamp. At SPEC, NIT Hamirpur, I'm Developer Relations Lead: speakers and judges for Electrothon 7.0 and 8.0, a dashboard 500+ participants used, and a 27-member team I trained.",
+    receipts: ['carboledger', 'spec', 'electrothon-8', 'linkedin'],
+  },
+  {
+    id: 'education',
+    keywords: ['college', 'education', 'study', 'studying', 'university', 'degree', 'nit', 'hamirpur', 'btech', 'b.tech', 'year'],
+    answer:
+      "Third-year B.Tech in Electronics & Communication at NIT Hamirpur, batch 2024–28, CGPA 8.94. I got in after a second drop for JEE — 99th percentile.",
+    receipts: ['cgpa', 'jee'],
+  },
+  {
+    id: 'hackathons',
+    keywords: ['hackathons', 'hackathon', 'sih', 'smart india', 'competitions', 'won'],
+    answer:
+      'Top 13 of ~100 teams in the Smart India Hackathon internal round. I helped organise Electrothon 7.0 and 8.0. And in October 2026 I ran four at once: Kin for Amazon, MeterMind for Build With AI and OpenCV, and a team entry for Meta due 4 Nov.',
+    receipts: ['sih', 'electrothon-8', 'kin', 'metermind'],
+  },
+  {
+    id: 'why-hire',
+    keywords: ['why hire', 'why should we hire', 'hire you', 'why you', 'stand out', 'fit', 'tumhe kyu'],
+    answer:
+      "Because I ship and I don't oversell it. I built a Hinglish voice assistant, so I know voice in India firsthand; I've already done partnerships and brand for a national hackathon; and I built this whole site by voice in one night. On day one I can bring Wispr to Electrothon 9.0.",
+    receipts: ['nova', 'electrothon-8', 'this-repo'],
+  },
+  {
+    id: 'strengths',
+    keywords: ['strength', 'strengths', 'good at', 'best quality', 'superpower'],
+    answer:
+      'Ownership and root-cause thinking. I ran four hackathons alongside an internship and classes, and when SeniorSays users complained I fixed the cause — a live slug check — not the error message. My NDA year gave me the discipline for it.',
+    receipts: ['kin', 'seniorsays', 'ssb'],
+  },
+  {
+    id: 'ai',
+    keywords: ['ai', 'llm', 'llms', 'machine learning', 'ml', 'gpt', 'claude', 'embeddings', 'agent', 'agents'],
+    answer:
+      "Legal Sarthi uses Llama-3.3-70B on Groq with a two-tier pipeline — local embeddings first, the LLM only when it's ambiguous. NOVA answers through Claude. SeniorSays has an OpenAI writing assistant. Kin is an Alexa+ MCP server. And you're talking to an AI twin right now.",
+    receipts: ['legal-sarthi', 'nova', 'seniorsays', 'kin'],
+  },
+  {
+    id: 'leadership',
+    keywords: ['leadership', 'lead', 'team', 'teamwork', 'manage people', 'mentor'],
+    answer:
+      "I trained a 27-member team on DSA and full-stack at SPEC, I'm Co-Coordinator of the Alumni Cell, and Legal Sarthi was a team build — that's where I learned rebase vs merge the hard way. The NDA year taught me to be a team player first.",
+    receipts: ['spec', 'legal-sarthi', 'ssb'],
+  },
+  {
     id: 'contact',
-    keywords: ['contact', 'email', 'reach you', 'hire', 'linkedin'],
+    keywords: ['contact', 'email', 'reach you', 'linkedin', 'phone'],
     answer: 'arpittyag246@gmail.com, or LinkedIn. I reply fast.',
     receipts: ['linkedin', 'github'],
   },
@@ -186,6 +249,9 @@ export const NO_RECEIPT_TOPICS: readonly string[] = [
   'manager',
   'startup founder',
 ];
+
+export const UNKNOWN_ANSWER =
+  "That one isn't on record yet — I only answer from things I've actually said. Try my projects, skills, biggest risk, mistakes or why growth.";
 
 export const NO_RECEIPT_ANSWER =
   "I can't back that up — there's no receipt for it, so I won't claim it. Ask me about NOVA, Legal Sarthi, Electrothon or why I want growth — those I can prove.";
