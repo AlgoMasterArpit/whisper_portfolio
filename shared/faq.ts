@@ -160,7 +160,7 @@ export const INTENTS: readonly Intent[] = [
     keywords: ['this site', 'built this', 'how was this made', 'portfolio', 'receipts', 'tech stack'],
     answer:
       'Every part of this site was spoken, not typed — Wispr Flow dictating into Claude Code. The raw takes, mis-hearings included, are further down the page.',
-    receipts: ['raw-tape'],
+    receipts: ['raw-tape', 'this-repo'],
   },
   {
     id: 'contact',
