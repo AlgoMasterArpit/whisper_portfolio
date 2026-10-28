@@ -134,7 +134,7 @@ export const INTENTS: readonly Intent[] = [
     id: 'cant-do',
     keywords: ['cant do', "can't do", "can't you do", 'cannot do', 'not yet', 'weakness', 'weak', 'not good at', 'learn next', 'video editing', 'stock'],
     answer:
-      "Things I can't do yet: stock-market investing, video editing and design, and any foreign language — I speak Hindi and English. I've also never run paid ads or owned a marketing channel full-time. All on my learning list.",
+      "Things I can't do yet: stock-market investing, video editing and design, and any foreign language — I speak Hindi and English. I have no receipts for paid ads or owning a marketing channel, so I won't claim them.",
     receipts: [],
   },
   {
