@@ -56,3 +56,8 @@ export function parseCommand(input: string): Command | null {
   }
   return null;
 }
+
+export function looksLikeQuestion(text: string): boolean {
+  const t = text.trim().toLowerCase();
+  return /\?$/.test(t) || /^(what|why|how|who|when|where|which|tell|do|did|are|is|can|kya|kaise|kyu|kyun|kab|kaun|kahan|sabse)\b/.test(t);
+}
