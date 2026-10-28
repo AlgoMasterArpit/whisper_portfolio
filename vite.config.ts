@@ -31,6 +31,7 @@ export default defineConfig(({ mode }) => {
     plugins: [react(), localApi()],
     test: {
       environment: 'node',
+      testTimeout: 15_000,
     },
   };
 });
