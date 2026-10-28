@@ -1443,3 +1443,141 @@ button {
     grid-template-columns: 1fr;
   }
 }
+
+.game {
+  background: var(--ink-2);
+}
+
+.game__round {
+  margin: 40px 0 16px;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted-on-ink);
+}
+
+.claims {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.claim {
+  position: relative;
+  min-height: 150px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 16px;
+  border: 0;
+  border-radius: 4px;
+  background: var(--paper);
+  color: var(--text-on-paper);
+  text-align: left;
+  font-family: var(--mono);
+  font-size: 17px;
+  line-height: 1.4;
+  transition: transform 0.25s cubic-bezier(0.3, 1.4, 0.5, 1), opacity 0.3s;
+}
+
+.claim:nth-child(odd) {
+  rotate: -0.7deg;
+}
+
+.claim:nth-child(even) {
+  rotate: 0.9deg;
+}
+
+.claim:hover:not([aria-disabled='true']) {
+  transform: translateY(-4px) scale(1.01);
+}
+
+.claim[aria-disabled='true'] {
+  cursor: default;
+}
+
+.claim.is-real {
+  opacity: 0.75;
+}
+
+.claim.is-fake {
+  background: var(--paper-2);
+  animation: shake 0.45s ease;
+}
+
+.claim.is-fake .claim__text {
+  text-decoration: line-through 2px var(--stamp);
+}
+
+.claim.is-picked {
+  outline: 3px solid var(--highlight);
+  outline-offset: 4px;
+}
+
+.claim__reveal {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.claim__proof {
+  font-size: 12px;
+  color: var(--muted-on-paper);
+  text-align: right;
+}
+
+@keyframes shake {
+  25% {
+    translate: -6px 0;
+  }
+  50% {
+    translate: 5px 0;
+  }
+  75% {
+    translate: -3px 0;
+  }
+}
+
+.game__why {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 22px;
+  font-size: 18px;
+}
+
+.game__why p {
+  margin: 0;
+  max-width: 60ch;
+}
+
+.game__end {
+  margin-top: 40px;
+  text-align: center;
+}
+
+.game__score {
+  margin: 0;
+  font-size: clamp(100px, 20vw, 220px);
+  font-weight: 800;
+  letter-spacing: -0.06em;
+  line-height: 0.9;
+}
+
+.game__rank {
+  margin: 10px 0 26px;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: clamp(24px, 3vw, 34px);
+}
+
+@media (max-width: 640px) {
+  .claims {
+    grid-template-columns: 1fr;
+  }
+}
