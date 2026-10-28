@@ -935,3 +935,224 @@ button {
     text-align: right;
   }
 }
+
+.museum {
+  --x: 50%;
+  --y: 40%;
+  overflow: hidden;
+  background:
+    repeating-linear-gradient(90deg, transparent 0 119px, rgba(255, 255, 255, 0.025) 119px 120px),
+    var(--ink);
+}
+
+.museum__dark {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(circle 260px at var(--x) var(--y), transparent 0, transparent 40%, rgba(5, 5, 4, 0.94) 100%);
+  transition: opacity 0.6s ease;
+}
+
+.museum.is-dark .museum__dark {
+  opacity: 1;
+}
+
+.museum__inner {
+  position: relative;
+}
+
+.museum__progress {
+  display: flex;
+  gap: 6px;
+  margin: 40px 0 28px;
+  padding: 0;
+  list-style: none;
+}
+
+.museum__progress li {
+  flex: 1;
+  height: 3px;
+  border-radius: 3px;
+  background: var(--line-on-ink);
+  transition: background 0.4s;
+}
+
+.museum__progress .is-done {
+  background: var(--paper);
+}
+
+.museum__progress .is-current {
+  background: var(--stamp);
+}
+
+.exhibit {
+  position: relative;
+  padding: clamp(28px, 5vw, 56px);
+  border: 1px solid var(--line-on-ink);
+  border-radius: var(--radius);
+  background: linear-gradient(160deg, var(--ink-2), var(--ink));
+  box-shadow: 0 0 0 10px var(--ink-2), 0 0 0 11px var(--line-on-ink);
+  animation: line-in 0.5s ease both;
+}
+
+.exhibit__year {
+  position: absolute;
+  top: 10px;
+  right: 24px;
+  margin: 0;
+  font-size: clamp(64px, 12vw, 160px);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.05em;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--line-on-ink);
+  pointer-events: none;
+}
+
+.exhibit__kind {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.exhibit__kind--mistake {
+  color: var(--stamp);
+}
+
+.exhibit__kind--risk {
+  color: var(--highlight);
+}
+
+.exhibit__kind--call {
+  color: var(--muted-on-ink);
+}
+
+.exhibit h3 {
+  position: relative;
+  margin: 10px 0 12px;
+  font-size: clamp(30px, 4.4vw, 56px);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  outline: none;
+}
+
+.exhibit__setup {
+  position: relative;
+  max-width: 56ch;
+  color: var(--muted-on-ink);
+  font-size: 18px;
+}
+
+.exhibit__options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.option {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 20px;
+  border: 1px solid var(--line-on-ink);
+  border-radius: 12px;
+  background: var(--ink);
+  text-align: left;
+  font-size: 17px;
+  transition: border-color 0.25s, background 0.25s, opacity 0.25s, transform 0.25s;
+}
+
+.option:hover:not(:disabled) {
+  border-color: var(--paper);
+  transform: translateY(-2px);
+}
+
+.option:disabled {
+  cursor: default;
+}
+
+.option__key {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  border: 1px solid currentColor;
+  font-family: var(--mono);
+  font-size: 13px;
+}
+
+.option.is-actual {
+  border-color: var(--paper);
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.option.is-yours {
+  border-color: var(--stamp);
+  border-style: dashed;
+}
+
+.option.is-muted {
+  opacity: 0.35;
+}
+
+.option__tag {
+  margin-left: auto;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.plaque {
+  position: relative;
+  margin-top: 24px;
+  padding: 22px 24px;
+  border-radius: 12px;
+  background: var(--paper);
+  color: var(--text-on-paper);
+  font-family: var(--mono);
+  font-size: 14px;
+  animation: print-out 0.8s cubic-bezier(0.3, 0.8, 0.3, 1) both;
+}
+
+.plaque p {
+  margin: 0 0 10px;
+}
+
+.plaque__verdict {
+  font-family: var(--display);
+  font-size: 22px;
+  font-weight: 750;
+}
+
+.plaque__lesson {
+  padding-left: 12px;
+  border-left: 3px solid var(--stamp);
+  font-weight: 700;
+}
+
+.plaque .btn {
+  margin-top: 16px;
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+}
+
+.exhibit--end h3 {
+  max-width: 18ch;
+}
+
+@media (max-width: 640px) {
+  .exhibit__options {
+    grid-template-columns: 1fr;
+  }
+}
