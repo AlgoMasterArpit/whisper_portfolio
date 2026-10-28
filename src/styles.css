@@ -1980,3 +1980,19 @@ button {
     grid-template-columns: 1fr;
   }
 }
+
+.skip {
+  position: fixed;
+  top: -60px;
+  left: 16px;
+  z-index: 200;
+  padding: 10px 16px;
+  border-radius: 8px;
+  background: var(--highlight);
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.skip:focus {
+  top: 16px;
+}
