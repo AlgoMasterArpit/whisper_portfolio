@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { parseCommand } from '../src/lib/commands';
+import { looksLikeQuestion, parseCommand } from '../src/lib/commands';
 
 describe('parseCommand', () => {
   it.each([
@@ -43,5 +43,15 @@ describe('parseCommand', () => {
     expect(parseCommand('')).toBeNull();
     expect(parseCommand('   ...  ')).toBeNull();
     expect(parseCommand('the weather is nice')).toBeNull();
+  });
+});
+
+describe('looksLikeQuestion', () => {
+  it.each(['why wispr', 'Kya tumne ads chalaye?', 'tell me about nova', 'sabse bada risk', 'anything?'])('“%s” is a question', (t) => {
+    expect(looksLikeQuestion(t)).toBe(true);
+  });
+
+  it.each(['hello there', 'nice site', ''])('“%s” is not', (t) => {
+    expect(looksLikeQuestion(t)).toBe(false);
   });
 });
