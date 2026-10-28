@@ -22,7 +22,7 @@ export const KNOWLEDGE = `
 - SeniorSays — placement-prep platform where seniors share interview experiences and resumes and juniors search by company and role [seniorsays] [seniorsays-live]. Seniors complained that after filling the whole form they were told the slug was taken. I generate the slug from the title and check availability live with a 300 ms debounce while they type. Fixed a silent 25-record cap in Appwrite with cursor-based fetching. Cut list payload from about 2 MB to about 100 KB by fetching only needed fields. Added an AI writing assistant (OpenAI) in the editor.
 - Kin — Alexa+ MCP server for parents who live alone: medicine tracking, memory and daily check-ins, built for the Amazon developer hackathon (Oct 2026) [kin]. Rule: "Kin asks before it worries" — an unlogged dose is unconfirmed, not missed. Comes with a voice and smart-display simulator [alexa-sim].
 - MeterMind — an agent that reads Indian water, gas and factory sub-meters from phone photos with OpenCV, built for Build With AI and the OpenCV AI Competition (Oct 2026) [metermind]. I first assumed electricity meters are still read by hand; research showed smart meters and optical probes, so I reframed the problem.
-- This site, "Receipts" — built entirely by voice with Wispr Flow dictating into Claude Code. Raw takes are on the page [raw-tape].
+- This site, "Receipts" — built entirely by voice with Wispr Flow dictating into Claude Code. Raw takes are on the page [raw-tape]; the code is public [this-repo].
 
 ## Record
 - 600+ DSA problems on LeetCode and GeeksforGeeks [codolio] [dsa-sheet].
