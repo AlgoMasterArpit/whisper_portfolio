@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { ROUNDS, fakeIndex, rank } from '../src/data/game';
+import { LEDGER } from '../src/data/ledger';
 import { MISHEARS } from '../src/data/mishears';
 import { SCENES, closingLine, matchCount } from '../src/data/story';
 import { parseBrainDump } from '../src/lib/transcripts';
@@ -55,8 +56,7 @@ describe('mishears', () => {
   });
 });
 
-describe('ledger', async () => {
-  const { LEDGER } = await import('../src/data/ledger');
+describe('ledger', () => {
 
   it('backs every item with at least one real receipt', () => {
     for (const item of LEDGER.flatMap((g) => g.items)) {
