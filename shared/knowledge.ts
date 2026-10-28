@@ -1,5 +1,5 @@
 export const KNOWLEDGE = `
-# Arpit Tyagi — facts (first person). Receipt ids in [brackets].
+# Arpit Tyagi — facts (first person). Receipt ids are in square brackets.
 
 ## Basics
 - From Bijnor, Uttar Pradesh. Third-year (5th semester) B.Tech, Electronics & Communication Engineering, NIT Hamirpur, Himachal Pradesh, batch 2024–2028. CGPA 8.94 [cgpa].
