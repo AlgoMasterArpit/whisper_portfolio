@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { INTENTS } from '../shared/faq';
+import { INTENTS, NO_RECEIPT_ANSWER, UNKNOWN_ANSWER } from '../shared/faq';
 import { matchOffline, normalize } from '../shared/matcher';
 import { findReceipt } from '../shared/receipts';
 
@@ -58,5 +58,53 @@ describe('intents', () => {
     for (const intent of INTENTS) {
       for (const id of intent.receipts) expect(findReceipt(id), `${intent.id}:${id}`).toBeDefined();
     }
+  });
+});
+
+describe('recruiter questions', () => {
+  it.each([
+    ['What are your skills?', 'skills'],
+    ['Which tech stack do you know?', 'skills'],
+    ['Do you know React?', 'skills'],
+    ['What projects have you built?', 'projects'],
+    ['Tell me about your work experience', 'experience'],
+    ['Where do you study?', 'education'],
+    ['Which college are you in?', 'education'],
+    ['What hackathons have you done?', 'hackathons'],
+    ['Why should we hire you?', 'why-hire'],
+    ['What is your biggest strength?', 'strengths'],
+    ['Have you worked with LLMs?', 'ai'],
+    ['Tell me about your leadership', 'leadership'],
+    ['How was this site built?', 'this-site'],
+    ['How did you build Legal Sarthi?', 'legal-sarthi'],
+    ['Tumne sabse badi galti kya ki?', 'mistakes'],
+    ['How can I contact you?', 'contact'],
+  ])('%s → %s', (question, intent) => {
+    expect(intentOf(question)).toBe(intent);
+  });
+
+  it.each([
+    'What do you do at Carboledger?',
+    'What is Kin?',
+    'Explain your two-tier pipeline',
+    'How many DSA problems have you solved?',
+    'What did you learn from the NDA year?',
+    'What would you do for Wispr in India?',
+    'Kaun si languages aati hain?',
+    'Tell me something not on your resume',
+    'What are you bad at?',
+    'How do you debug a hard problem?',
+    'What is your CGPA?',
+    'Why did you pick software over hardware?',
+    'What is MeterMind?',
+    'Which hackathon did you organise?',
+  ])('answers “%s” instead of shrugging', (question) => {
+    const { text } = matchOffline(question);
+    expect(text).not.toBe(UNKNOWN_ANSWER);
+    expect(text).not.toBe(NO_RECEIPT_ANSWER);
+  });
+
+  it('says “not on record” for things I never talked about', () => {
+    expect(matchOffline('What is your favourite movie?').text).toBe(UNKNOWN_ANSWER);
   });
 });
