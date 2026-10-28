@@ -437,3 +437,198 @@ button {
     display: none;
   }
 }
+
+.hero {
+  position: relative;
+  min-height: 100svh;
+  display: grid;
+  align-items: center;
+  padding-block: 120px 80px;
+  overflow: hidden;
+}
+
+.ridge {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.55;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 30% 50%, color-mix(in srgb, var(--ink) 70%, transparent), transparent 70%);
+  pointer-events: none;
+}
+
+.hero__inner {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 0.8fr);
+  gap: clamp(32px, 6vw, 80px);
+  align-items: center;
+}
+
+.hero__title {
+  margin: 14px 0 22px;
+  font-size: clamp(48px, 8.4vw, 124px);
+  line-height: 0.9;
+  letter-spacing: -0.045em;
+  font-weight: 800;
+}
+
+.hero__title span {
+  display: block;
+  margin-top: 0.08em;
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  color: var(--stamp);
+}
+
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 30px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 22px;
+  border-radius: 999px;
+  border: 1px solid var(--paper);
+  background: var(--paper);
+  color: var(--ink);
+  font-weight: 650;
+  text-decoration: none;
+  transition: transform 0.2s, background 0.2s, color 0.2s;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+}
+
+.btn--ghost {
+  background: transparent;
+  color: var(--text-on-ink);
+  border-color: var(--line-on-ink);
+}
+
+.btn__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--stamp);
+}
+
+.btn--mic.is-live {
+  background: var(--stamp);
+  border-color: var(--stamp);
+  color: var(--paper);
+}
+
+.btn--mic.is-live .btn__dot {
+  background: var(--paper);
+  animation: pulse 1.2s infinite;
+}
+
+.hero__caption {
+  min-height: 1.6em;
+  margin-top: 18px;
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--muted-on-ink);
+}
+
+.hero__receipt {
+  position: relative;
+  padding-top: 14px;
+  justify-self: end;
+  width: min(100%, 380px);
+}
+
+.printer-slot {
+  position: absolute;
+  top: 0;
+  left: -14px;
+  right: -14px;
+  height: 18px;
+  border-radius: 10px;
+  background: linear-gradient(var(--ink-3), var(--ink));
+  border: 1px solid var(--line-on-ink);
+  z-index: 2;
+}
+
+.receipt--print {
+  transform: rotate(1.5deg);
+  animation: print-out 1.6s cubic-bezier(0.3, 0.8, 0.3, 1) 0.2s both;
+}
+
+@keyframes print-out {
+  from {
+    clip-path: inset(0 0 100% 0);
+    translate: 0 -60px;
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+    translate: 0 0;
+  }
+}
+
+.line {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  animation: line-in 0.4s ease both;
+  animation-delay: calc(0.5s + var(--i, 0) * 0.16s);
+}
+
+.line__dots {
+  flex: 1;
+  border-bottom: 1px dotted currentColor;
+  opacity: 0.5;
+  translate: 0 -4px;
+}
+
+.line > span:last-child {
+  font-weight: 700;
+  text-align: right;
+}
+
+.line--total {
+  font-size: 14px;
+  text-transform: uppercase;
+}
+
+@keyframes line-in {
+  from {
+    opacity: 0;
+  }
+}
+
+.hero__stamp {
+  position: absolute;
+  right: 18px;
+  bottom: 74px;
+}
+
+.hero__stamp .stamp {
+  animation-delay: 1.9s;
+}
+
+@media (max-width: 860px) {
+  .hero__inner {
+    grid-template-columns: 1fr;
+  }
+
+  .hero__receipt {
+    justify-self: start;
+  }
+}
