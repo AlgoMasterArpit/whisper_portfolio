@@ -614,9 +614,8 @@ button {
 }
 
 .hero__stamp {
-  position: absolute;
-  right: 18px;
-  bottom: 74px;
+  margin-top: 14px;
+  text-align: right;
 }
 
 .hero__stamp .stamp {
