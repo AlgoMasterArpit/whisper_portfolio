@@ -8,7 +8,7 @@ export interface Intent {
 export const INTENTS: readonly Intent[] = [
   {
     id: 'about',
-    keywords: ['who are you', 'about you', 'introduce', 'yourself', 'kaun ho', 'apne baare', 'tell me about'],
+    keywords: ['who are you', 'about yourself', 'introduce', 'yourself', 'kaun ho', 'apne baare'],
     answer:
       "I'm Arpit Tyagi from Bijnor, UP — a third-year ECE student at NIT Hamirpur with a 8.94 CGPA. I'm a full-stack developer interning at Carboledger, and Developer Relations Lead at SPEC, where I helped run Electrothon 7.0 and 8.0.",
     receipts: ['cgpa', 'carboledger', 'spec', 'linkedin'],
@@ -132,7 +132,7 @@ export const INTENTS: readonly Intent[] = [
   },
   {
     id: 'cant-do',
-    keywords: ['cant do', "can't do", "can't you do", 'cannot do', 'not yet', 'weakness', 'weak', 'not good at', 'learn next', 'video editing', 'stock'],
+    keywords: ['cant do', "can't do", "can't you do", 'cannot do', 'not yet', 'weakness', 'weak', 'not good at', 'bad at', 'learn next', 'video editing', 'stock'],
     answer:
       "Things I can't do yet: stock-market investing, video editing and design, and any foreign language — I speak Hindi and English. I have no receipts for paid ads or owning a marketing channel, so I won't claim them.",
     receipts: [],
@@ -178,7 +178,7 @@ export const INTENTS: readonly Intent[] = [
   },
   {
     id: 'experience',
-    keywords: ['experience', 'worked', 'work experience', 'job', 'jobs', 'roles', 'companies'],
+    keywords: ['experience', 'worked at', 'work experience', 'job', 'jobs', 'roles', 'companies'],
     answer:
       "I'm a Full Stack Engineer Intern at Carboledger, building React screens for the Smart Balance revamp. At SPEC, NIT Hamirpur, I'm Developer Relations Lead: speakers and judges for Electrothon 7.0 and 8.0, a dashboard 500+ participants used, and a 27-member team I trained.",
     receipts: ['carboledger', 'spec', 'electrothon-8', 'linkedin'],
