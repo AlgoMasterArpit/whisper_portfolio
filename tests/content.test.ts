@@ -54,3 +54,14 @@ describe('mishears', () => {
     for (const m of MISHEARS) expect(textOf(m.question), m.said).toContain(m.said);
   });
 });
+
+describe('ledger', async () => {
+  const { LEDGER } = await import('../src/data/ledger');
+
+  it('backs every item with at least one real receipt', () => {
+    for (const item of LEDGER.flatMap((g) => g.items)) {
+      expect(item.receipts.length, item.name).toBeGreaterThan(0);
+      for (const id of item.receipts) expect(findReceipt(id), `${item.name}:${id}`).toBeDefined();
+    }
+  });
+});
