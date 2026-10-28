@@ -1,5 +1,5 @@
-import { INTENTS, NO_RECEIPT_ANSWER, NO_RECEIPT_TOPICS, type Intent } from './faq';
-import { resolveReceipts, verdictFor, type Receipt, type Verdict } from './receipts';
+import { INTENTS, NO_RECEIPT_ANSWER, NO_RECEIPT_TOPICS, type Intent } from './faq.js';
+import { resolveReceipts, verdictFor, type Receipt, type Verdict } from './receipts.js';
 
 export interface Answer {
   text: string;
