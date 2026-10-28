@@ -57,7 +57,6 @@ describe('mishears', () => {
 });
 
 describe('ledger', () => {
-
   it('backs every item with at least one real receipt', () => {
     for (const item of LEDGER.flatMap((g) => g.items)) {
       expect(item.receipts.length, item.name).toBeGreaterThan(0);
