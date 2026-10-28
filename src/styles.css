@@ -624,7 +624,7 @@ button {
 
 @media (max-width: 860px) {
   .hero__inner {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .hero__receipt {
@@ -824,7 +824,7 @@ button {
 
 @media (max-width: 860px) {
   .ask__grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
@@ -922,7 +922,7 @@ button {
 
 @media (max-width: 860px) {
   .ledger__grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .ledger__intro {
@@ -1152,7 +1152,7 @@ button {
 
 @media (max-width: 640px) {
   .exhibit__options {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
@@ -1433,13 +1433,13 @@ button {
 @media (max-width: 860px) {
   .evidence,
   .experiment__head {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
 @media (max-width: 520px) {
   .tiles {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
@@ -1577,7 +1577,7 @@ button {
 
 @media (max-width: 640px) {
   .claims {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
@@ -1752,7 +1752,7 @@ button {
 
 @media (max-width: 640px) {
   .tape__stats {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .transcript__take {
@@ -1977,7 +1977,7 @@ button {
 
 @media (max-width: 760px) {
   .footer__grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
