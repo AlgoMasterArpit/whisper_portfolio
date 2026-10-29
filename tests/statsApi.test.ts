@@ -18,9 +18,11 @@ function fakeRedis() {
       case 'GET':
         return strings.has(k) ? String(strings.get(k)) : null;
       case 'SADD':
-      case 'PFADD':
+      case 'PFADD': {
+        const before = set(k).size;
         args.forEach((a) => set(k).add(String(a)));
-        return 1;
+        return set(k).size > before ? 1 : 0;
+      }
       case 'SMEMBERS':
         return [...set(k)];
       case 'PFCOUNT':
@@ -70,7 +72,9 @@ describe('live stats endpoints', () => {
     await POST(hit({ referrer: 'https://web.whatsapp.com/' }, BROWSER, '10.0.0.2'));
     const { days } = (await (await GET()).json()) as { days: { visits: number; visitors: number; channels: object }[] };
     expect(days).toHaveLength(1);
-    expect(days[0]).toMatchObject({ visits: 3, visitors: 2, channels: { linkedin: 2, whatsapp: 1 } });
+    expect(days[0]).toMatchObject({ visits: 3, visitors: 2, channels: { linkedin: 1, whatsapp: 1 } });
+    const chips = Object.values(days[0]!.channels as Record<string, number>).reduce((a, b) => a + b, 0);
+    expect(chips).toBe(days[0]!.visitors);
   });
 
   it('ignores link-preview bots so LinkedIn crawlers do not inflate the numbers', async () => {
