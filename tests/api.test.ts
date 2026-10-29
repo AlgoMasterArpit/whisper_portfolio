@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 const post = (body: string, ip = '1.1.1.1') =>
   new Request('http://localhost/api/ask', {
@@ -39,5 +39,30 @@ describe('POST /api/ask', () => {
     for (let i = 0; i < 20; i++) await POST(post(body, '9.9.9.9'));
     expect((await POST(post(body, '9.9.9.9'))).status).toBe(429);
     expect((await POST(post(body, '8.8.8.8'))).status).toBe(200);
+  });
+});
+
+describe('POST /api/ask with a model', () => {
+  beforeEach(() => {
+    vi.resetModules();
+    vi.stubEnv('LLM_API_KEY', 'k');
+    vi.stubEnv('LLM_MODEL', 'm');
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    vi.unstubAllEnvs();
+  });
+
+  it('answers a repeated question from cache without calling the model again', async () => {
+    const fetchImpl = vi.fn(
+      async () => new Response(JSON.stringify({ choices: [{ message: { content: '{"answer":"Yes.","receipts":["nova"]}' } }] })),
+    );
+    vi.stubGlobal('fetch', fetchImpl);
+    const { POST } = await import('../api/ask');
+    const ask = () => POST(post(JSON.stringify({ question: 'What is NOVA?' }), '7.7.7.7'));
+    expect(await (await ask()).json()).toMatchObject({ text: 'Yes.', source: 'twin' });
+    expect(await (await ask()).json()).toMatchObject({ text: 'Yes.', source: 'twin' });
+    expect(fetchImpl).toHaveBeenCalledTimes(1);
   });
 });
