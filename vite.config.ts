@@ -7,13 +7,17 @@ function localApi(): Plugin {
     name: 'local-api',
     configureServer(server) {
       server.middlewares.use(async (req, res, next) => {
-        const route = req.url?.match(/^\/api\/(ask|speak)(?:\?|$)/)?.[1];
+        const route = req.url?.match(/^\/api\/(ask|speak|hit|go|stats)(?:\?|$)/)?.[1];
         if (!route) return next();
         const chunks: Buffer[] = [];
         for await (const chunk of req) chunks.push(chunk as Buffer);
-        const { POST } = await server.ssrLoadModule(`/api/${route}.ts`);
-        const response: Response = await POST(
-          new Request(`http://localhost/api/${route}`, {
+        const handler = (await server.ssrLoadModule(`/api/${route}.ts`))[req.method ?? 'GET'];
+        if (!handler) {
+          res.statusCode = 405;
+          return res.end();
+        }
+        const response: Response = await handler(
+          new Request(`http://localhost${req.url}`, {
             method: req.method,
             headers: req.headers as Record<string, string>,
             body: req.method === 'POST' ? Buffer.concat(chunks) : undefined,
@@ -28,7 +32,7 @@ function localApi(): Plugin {
 }
 
 export default defineConfig(({ mode }) => {
-  Object.assign(process.env, loadEnv(mode, process.cwd(), ['LLM_', 'TTS_']));
+  Object.assign(process.env, loadEnv(mode, process.cwd(), ['LLM_', 'TTS_', 'KV_', 'UPSTASH_', 'STATS_', 'WISPR_']));
   return {
     plugins: [react(), localApi()],
     test: {
