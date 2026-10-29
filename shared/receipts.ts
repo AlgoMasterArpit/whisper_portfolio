@@ -8,7 +8,7 @@ export interface Receipt {
   note?: string;
 }
 
-export type Verdict = 'verified' | 'self-reported' | 'no-receipt';
+export type Verdict = 'verified' | 'self-reported' | 'no-receipt' | 'general';
 
 const GH = 'https://github.com/AlgoMasterArpit';
 
@@ -30,6 +30,7 @@ export const RECEIPTS: readonly Receipt[] = [
   { id: 'dsa-sheet', label: 'DSA revision sheet', kind: 'public', url: 'https://dsa-revision-lime.vercel.app' },
   { id: 'this-repo', label: 'Source of this site', kind: 'public', url: `${GH}/whisper_portfolio` },
   { id: 'raw-tape', label: 'Raw voice transcripts', kind: 'public', url: '#tape', note: 'unedited Wispr Flow takes on this page' },
+  { id: 'resume', label: 'My resume', kind: 'self-reported', note: 'resume on request' },
   { id: 'cgpa', label: 'CGPA 8.94', kind: 'self-reported', note: 'transcript on request' },
   { id: 'sih', label: 'SIH internal round — top 13 of ~100', kind: 'self-reported', note: 'NIT Hamirpur internal round' },
   { id: 'carboledger', label: 'Carboledger internship', kind: 'self-reported', note: 'listed on LinkedIn, offer letter on request' },
