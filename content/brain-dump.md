@@ -8,13 +8,9 @@
 - Carboledger: **6-month internship, started July 2026, ongoing** (the resume's "Jul–Oct" end date is out of date)
 - Q2 NOVA: "Java" → **Jarvis**; "first product I built" → **first Android / voice product** (Legal Sarthi and SeniorSays came earlier)
 - Q2 Legal Sarthi: "Grok Java API" → **Groq (Llama-3.3-70B)**; "IPs" → **IPCs**; "preceding cases" → **precedent cases**; the precedent API he couldn't name → **Indian Kanoon**; it's a **team project**; the FIR image → text (AWS) part is **not built yet** (future scope); deployed on **EC2 with Docker**. ECS was only learned, not used, so the twin must not claim ECS
-- Q3: "CHED" → **JEE**; "National School of Technology… an IT college" → **National Institute of Technology (NIT) Hamirpur**; "AI and OpenAI hackathon" → **Build With AI and OpenCV AI Competition** (both 27 Oct); 99th percentile = JEE, after the second drop; first drop = defence exams / SSB, not cleared
-- Q4: "J exam" / "J" → **JEE**; passed 12th in **2022**; NDA written exams cleared, SSBs not cleared; the mistake = **no backup plan** (didn't prepare for JEE in parallel); DSA mistake = untimed practice, fixed with time-boxed practice + contests
 - Q5 skipped (write "care about" from the other answers: privacy, India-first, the real-life lawyer problem)
 - Q6: "Seniors" → **SeniorSays**; "internal" → **interview**; debounce "3 ms" → **300 ms** (confirmed); the check fires after the user **stops** typing, not "continues"
 - Q7: "developer lead" / "developer at Spec" → **Developer Relations Lead at SPEC**; "I will intentionally call it" → **I didn't call it growth back then**; "Indian accent and English" → **Indian accents and Hinglish**; "Electrothon Mindpointo" / "Electrothon 9" → **Electrothon 9.0**; "strength builders" → **student builders**; "exit users would love building their voice" → **exactly the users who'd love building by voice**
-- Q8: "NDASSB" → **NDA / SSB**; year = **2022–23**
-- Q9: "They know two languages" → **I know two languages, Hindi and English**; can't do yet = stock-market investing, video editing, a foreign language. Paid ads and owning a channel were not mentioned, so the honesty flag handles them through "no receipt"
 
 ## Q1. Who are you?
 
@@ -72,33 +68,6 @@ The major learnings, I would say, are:
 - The new tech stack: I got to learn Fast API, AWS, EC2, and ECS. We have deployed on EC2. I got to learn Docker images through this project.
 These were great learnings, and it's a team project. Handling the basic difference between rebase and merge things, and GitHub commands, I got to learn from these projects.
 
-## Q3. Biggest risk
-
-### Take 1
-
-coming to the biggest risk I have taken in my life, I would say there are a lot of stages in my life where we have taken risks, and sometimes, or many times, it has proved to be a success.
-For example, when I passed my 12th, there were a lot of options in front of me: to give the JEE and enroll in a technical institute, or to give a defense exam to try out what I want to be or try out my passion. After completing my first drop year, when I was not able to clear the defense SSBs, there was one option in front of me: to join the private institute and continue my technical education, like BTECH, or take a second drop of CHED, which was too risky at that stage. I took a risk at that time and took a second drop, and that finally proved to be successful. I got into the 99th percentile there and enrolled in the National School of Technology, Hamirpur, an IT college in Hamirpur.
-In the second stage, I would say that I took a risk when I enrolled in a college. As I mentioned, in the first year, I tried out both things, like software and electronics. Now, as an electronics student, I am in the software domain, so it was a risk as well. I had self-doubt in my mind about whether I would be able to maintain both or excel in my education as well, while maintaining both software and my CGPA. However, I was successful in maintaining both.
-Now, coming to the third risk, I would say that recently, as I mentioned, I'm doing the internship as well. I am doing the classes on a regular basis as well, and there I'm participating in the hackathons as well. I thought of participating in the online hackathons. Recently, there are 3 to 4 hackathons, and the time domains were overlapping:
-- In the Amazon hackathon, we participated on 24 October.
-- The AI and OpenAI hackathon was there on 27 October.
-- The deadline for Meta is on 4 November, and our team is working on it.
-That is also a risk we are taking to do multiple things at the same time, but through learning about this, we are able to manage and excel at time management.
-
-## Q4. Biggest mistakes
-
-### Take 1
-
-coming to the biggest mistakes, or the mistakes I have made in my life, I would like to mention two mistakes I have made.
-
-It was a story from about 2022, when I passed out of my 12th. I thought of giving the defense exam NDA and preparing for that, and I took a drop. Throughout my year, I gave the SSBs. I cleared the exams somehow, and I gave a lot of SSBs. After that year, when the SSB attempts were over, I had nothing left in my hand. After one year, I was thinking about what to do. As I already mentioned, I thought of going to either a private institute or just giving the J exam. It was one of my big mistakes.
-
-What I learned from this mistake is to have backup plans. I should have been studying the subjects of J in parallel, and I should also have applied for JEE Mains. That might have led to saving my one complete year, one whole year. A backup plan should be there with you. That was the biggest learning.
-
-Coming to the second part, the mistake I made was that when, in the first year, I started preparing for placements or internships, I started DSA. Now, in the third year, I'm in the fifth sem. What I realized, by the way, is that I'm unable to handle the time pressure. The thing was that when I started learning, I learned in the free time range. I don't think about the time. I just give whatever amount of time I can give to solve a particular question.
-
-I think the thing I learned is that I should do time-driven learning. I should share a question, and I should give a particular time to that. What it will lead to is that it will definitely help me always maintain awareness of my time pressure and improve that. I am giving the contest now.
-
 ## Q6. How I think when stuck
 
 ### Take 1
@@ -124,27 +93,3 @@ The dashboard we built in our Electrothon 8.0: nearly 500 participants enrolled 
 Why Wispr specifically? As I mentioned, I built my personal AI agent called Nova. I know how fast and how hard it is for voice tech to understand the Indian accent and English. India is a voice note country. WhatsApp voice notes are everywhere. Indians already talk to their phones. Wispr has just turned that talking into work. I'm currently using that in my entire portfolio as well, which is built using my voice.
 
 Coming to what I would really do, I can start on day one. As I mentioned, I'm a developer at Spec so I can bring Wispr to Electrothon Mindpointo as a partner. It's a national-level hackathon for the strength builders. The exit users would love building their voice. Being a part of college tech societies, which is known all around the country, it's the greatest opportunity. If we bring Wispr Flow to Electrothon 9 as a sponsor, definitely people can build using Wispr there.
-
-## Q8. Not on my resume
-
-### Take 1
-
-sort of thing which is currently not mentioned in my resume: it's like the NDASSB preparation. It was the year 2022 to 2023. That was a year when I gave a lot of SSBs and a lot of things there. I learned about discipline, time management skills, and being a team player. I became there, and leadership skills and a sense of responsibility were built from there. All these things are main. I haven't mentioned them in my resume.
-
-## Q9. Can't do yet
-
-### Take 1
-
-there are a lot of things I want to do, but I can't do them at this time. For example, I want to do stock market investing with some kind of money and make a profit out there. I can't do this at this time because I'm unable to fix my schedule and some kind of things. I need to learn about the things so that I can perform well there.
-
-There's definitely a friend of mine who does a lot of things related to the stock markets. Definitely talk to him and get to know about the trends and different things.
-
-Coming to the part where I want to do video editing and design, many of my friends do video editing. It's very iconic to see a video which gets edited. It took a lot of hard work, like 9 to 10 hours of editing, and finally resulted in 2 to 3 minutes. Definitely, it's a great kick. I want to learn that.
-
-In my holidays, I will definitely start it and speak a different language. They know two languages, Hindi and English. I want to learn one of the foreign languages, just for the sake of learning, and definitely I will try in my summer holidays too.
-
-## Q10. The $3,000 grant
-
-### Take 1
-
-$3,000 is a big amount. I can buy a lot of things for myself. I always want to have a good setup of my own. Laptops are a big screen for me, so I can just do a great setup in my hostel room. I can buy a new laptop for myself, like a MacBook or any other thing. These things I can do.
