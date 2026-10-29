@@ -1,5 +1,4 @@
 import { MISHEARS } from '../data/mishears';
-import { BUILD_PROMPTS } from '../data/prompts';
 import { QUESTIONS, WORDS_SPOKEN } from '../lib/raw';
 
 const TAKES = QUESTIONS.reduce((n, q) => n + q.takes.length, 0);
@@ -45,22 +44,6 @@ export function RawTape() {
             </li>
           ))}
         </ul>
-
-        <div className="buildlog">
-          <h3>What I said to build it</h3>
-          <p className="buildlog__note">Spoken into Wispr Flow, sent straight to Claude Code. Typos are Wispr’s — and mine.</p>
-          <ol>
-            {BUILD_PROMPTS.map((p) => (
-              <li key={p.at}>
-                <time dateTime={p.at}>
-                  {new Date(p.at).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Kolkata' })}
-                </time>
-                <q>{p.said}</q>
-                <span>{p.then}</span>
-              </li>
-            ))}
-          </ol>
-        </div>
 
         <div className="transcripts">
           <h3>Every take, unedited</h3>
