@@ -33,6 +33,9 @@ const GOTO: readonly [SectionId, RegExp, RegExp][] = [
   ['top', /\b(top|upar|home|start|shuru)\b/, hindi('ऊपर', 'शुरू')],
 ];
 
+const NAV_VERB = /\b(open|show|go|take me|jump|scroll|talk|dikhao|dikha|kholo|jao|chalo|le chalo)\b/;
+const NAV_VERB_HI = /(दिखाओ|खोलो|जाओ|चलो)/u;
+
 export function parseCommand(input: string): Command | null {
   const text = input
     .toLowerCase()
@@ -59,6 +62,9 @@ export function parseCommand(input: string): Command | null {
 
   if (/\b(help|commands|madad)\b|what can i say|kya bol/.test(text)) return { type: 'help' };
 
+  const navigation = text.split(' ').length <= 3 || NAV_VERB.test(text) || NAV_VERB_HI.test(text);
+  if (!navigation) return null;
+
   for (const [section, latin, devanagari] of GOTO) {
     if (latin.test(text) || devanagari.test(text)) return { type: 'goto', section };
   }
@@ -69,6 +75,7 @@ export function looksLikeQuestion(text: string): boolean {
   const t = text.trim().toLowerCase();
   return (
     /\?$/.test(t) ||
+    t.split(/\s+/).length >= 3 ||
     /^(what|why|how|who|when|where|which|tell|do|did|are|is|can|kya|kaise|kyu|kyun|kab|kaun|kahan|sabse)\b/.test(t) ||
     /^(क्या|कैसे|क्यों|कब|कौन|कहाँ|सबसे)(\s|$)/u.test(t)
   );
