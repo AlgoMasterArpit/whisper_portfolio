@@ -7,8 +7,8 @@ import { ProofList } from './Receipt';
 const EVIDENCE = [
   {
     label: 'Partnerships',
-    title: 'Speakers & judges for Electrothon 7.0 and 8.0',
-    body: 'As DevRel Lead I brought them in and grew the brand of a national hackathon. I didn’t call it growth back then.',
+    title: 'Electrothon 7.0 and 8.0, with the SPEC team',
+    body: 'As a team we brought in speakers and judges and grew a national hackathon’s reach. My part was developer relations — I didn’t call it growth back then.',
     receipts: ['electrothon-7', 'electrothon-8'],
   },
   {
@@ -58,15 +58,11 @@ export function GrowthLab() {
           ))}
         </div>
 
-        <article className="offer" data-reveal>
-          <p className="offer__label">Day-one offer</p>
-          <h3>
-            Electrothon 9.0 <span>×</span> Wispr Flow
-          </h3>
+        <article className="idea" data-reveal>
+          <p className="evidence__label">An idea I’d explore</p>
           <p>
-            A national hackathon full of student builders — exactly the people who’d love building by voice. As DevRel
-            Lead at SPEC, I can bring Wispr in as a partner. College tech societies are an untapped channel, and I already
-            have a foot in that door.
+            College hackathons are full of student builders — the people most likely to enjoy building by voice. I’d love
+            to explore a student-hackathon partnership for Wispr Flow together with my SPEC team.
           </p>
         </article>
 
