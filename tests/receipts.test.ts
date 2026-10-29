@@ -38,7 +38,7 @@ describe('verdictFor', () => {
   });
 
   it('is self-reported when only self-reported receipts back the claim', () => {
-    expect(verdictFor(resolveReceipts(['cgpa', 'jee']))).toBe('self-reported');
+    expect(verdictFor(resolveReceipts(['cgpa', 'sih']))).toBe('self-reported');
   });
 
   it('is no-receipt when nothing backs the claim', () => {
