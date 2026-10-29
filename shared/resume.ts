@@ -1,3 +1,4 @@
+export const RESUME = `
 # Arpit Tyagi — resume
 
 arpittyag246@gmail.com · [LinkedIn](https://www.linkedin.com/in/arpit-tyagi-526b33277) · [GitHub](https://github.com/AlgoMasterArpit) · [Codolio](https://codolio.com/profile/AlgoMasterArpit)
@@ -49,3 +50,4 @@ B.Tech, Electronics & Communication Engineering — CGPA 8.94/10 · Aug 2024 –
 - Solved 600+ DSA problems on LeetCode and GeeksforGeeks.
 - Organised national-level hackathons Electrothon 7.0 and 8.0 as part of the SPEC team.
 - Co-Coordinator, Alumni Cell, NIT Hamirpur.
+`.trim();

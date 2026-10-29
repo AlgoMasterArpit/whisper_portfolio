@@ -1,6 +1,6 @@
-import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { KNOWLEDGE } from '../shared/knowledge';
+import { RESUME } from '../shared/resume';
 import { findReceipt } from '../shared/receipts';
 
 describe('knowledge base', () => {
@@ -25,7 +25,7 @@ describe('knowledge base', () => {
 });
 
 describe('knowledge stays in sync with the resume', () => {
-  const resume = readFileSync(new URL('../content/resume.md', import.meta.url), 'utf8');
+  const resume = RESUME;
   const skills = resume
     .slice(resume.indexOf('## Technical skills'), resume.indexOf('## Experience'))
     .split('\n')
