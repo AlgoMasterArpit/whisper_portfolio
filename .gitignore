@@ -9,3 +9,4 @@ content/talking-points.md
 *.log
 test-results
 playwright-report
+voice-samples
