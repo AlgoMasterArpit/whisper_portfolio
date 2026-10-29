@@ -12,7 +12,7 @@ import { SpotTheFake } from './components/SpotTheFake';
 import { looksLikeQuestion, parseCommand, type Command, type SectionId } from './lib/commands';
 import { useMotion, useReveal } from './lib/motion';
 import { RawContext } from './lib/raw';
-import { useSpeakPref } from './lib/speak';
+import { stopSpeaking, useSpeakPref, useSpeaking } from './lib/speak';
 import { useAsk } from './lib/useAsk';
 import { useVoice, type VoiceMode } from './lib/voice';
 
@@ -34,6 +34,7 @@ export function App() {
   const [raw, setRaw] = useState(false);
   const [motion, setMotion] = useMotion();
   const [speakOn, setSpeakOn] = useSpeakPref();
+  const speaking = useSpeaking();
   const [helpOpen, setHelpOpen] = useState(false);
   const [heard, setHeard] = useState('');
   const { entries, ask, busy } = useAsk();
@@ -46,10 +47,10 @@ export function App() {
 
   const askAndShow = useCallback(
     (question: string, voice = false) => {
-      scrollTo('ask');
+      document.querySelector('.printer')?.scrollIntoView({ behavior: motion ? 'smooth' : 'auto', block: 'start' });
       void ask(question, voice);
     },
-    [ask, scrollTo],
+    [ask, motion],
   );
 
   const run = useCallback(
@@ -98,10 +99,19 @@ export function App() {
   const voice = useVoice(onFinal);
   const { listening, start, stop } = voice;
 
+  const listen = useCallback(
+    (mode: VoiceMode) => {
+      stopSpeaking();
+      void start(mode);
+    },
+    [start],
+  );
+
   const toggleCommands = useCallback(() => {
     if (listening === 'command') stop();
-    else void start('command');
-  }, [listening, start, stop]);
+    else if (speaking) stopSpeaking();
+    else listen('command');
+  }, [listen, listening, speaking, stop]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -128,7 +138,8 @@ export function App() {
           interim={voice.interim}
           heard={heard}
           voiceError={voice.error}
-          onTalk={() => void start('command')}
+          speaking={speaking}
+          onTalk={toggleCommands}
           onStop={stop}
         />
         <AskArpit
@@ -137,7 +148,9 @@ export function App() {
           onAsk={askAndShow}
           dictating={listening === 'dictate'}
           interim={voice.interim}
-          onDictate={() => void start('dictate')}
+          onDictate={() => listen('dictate')}
+          speaking={speaking}
+          onStopSpeaking={stopSpeaking}
           onStopDictate={stop}
           speakOn={speakOn}
           onSpeak={setSpeakOn}
@@ -150,7 +163,7 @@ export function App() {
       </main>
       <Footer motion={motion} onMotion={setMotion} />
       <CommandBar
-        live={listening === 'command'}
+        live={listening === 'command' || speaking}
         interim={voice.interim}
         heard={heard}
         onToggle={toggleCommands}
