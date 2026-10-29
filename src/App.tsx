@@ -45,9 +45,9 @@ export function App() {
   );
 
   const askAndShow = useCallback(
-    (question: string) => {
+    (question: string, voice = false) => {
       scrollTo('ask');
-      void ask(question);
+      void ask(question, voice);
     },
     [ask, scrollTo],
   );
@@ -65,7 +65,7 @@ export function App() {
           setMotion(command.on);
           return command.on ? '→ motion on' : '→ motion reduced';
         case 'ask':
-          askAndShow(command.question);
+          askAndShow(command.question, true);
           return `→ asking: ${command.question}`;
         case 'speak':
           setSpeakOn(command.on);
@@ -82,13 +82,13 @@ export function App() {
     (text: string, mode: VoiceMode) => {
       if (!text) return;
       if (mode === 'dictate') {
-        askAndShow(text);
+        askAndShow(text, true);
         return;
       }
       const command = parseCommand(text);
       if (command) setHeard(`“${text}” ${run(command)}`);
       else if (looksLikeQuestion(text)) {
-        askAndShow(text);
+        askAndShow(text, true);
         setHeard(`“${text}” → asking the twin`);
       } else setHeard(`“${text}” — try “help”`);
     },
