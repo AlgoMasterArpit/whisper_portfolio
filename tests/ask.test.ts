@@ -2,10 +2,12 @@ import { describe, expect, it, vi } from 'vitest';
 import {
   DEFAULT_BASE_URL,
   DEFAULT_MODEL,
+  FALLBACK_MODELS,
   MAX_QUESTION_LENGTH,
   askTwin,
   buildMessages,
   createRateLimiter,
+  modelChain,
   parseTwinReply,
   readQuestion,
 } from '../shared/ask';
@@ -118,5 +120,48 @@ describe('askTwin request shape', () => {
     const other = llmReply('{"answer":"ok","receipts":[]}');
     await askTwin('hi', { apiKey: 'k', model: 'qwen/qwen3.8-27b' }, other);
     expect(bodyOf(other)).not.toHaveProperty('reasoning_effort');
+  });
+});
+
+describe('model chain', () => {
+  const callModel = (fetchImpl: ReturnType<typeof vi.fn>, i: number) =>
+    JSON.parse(((fetchImpl.mock.calls[i] as unknown as [string, RequestInit])[1].body as string)).model;
+
+  it('parses a comma-separated list and defaults to the fallback chain', () => {
+    expect(modelChain(' a , b ,, c ')).toEqual(['a', 'b', 'c']);
+    expect(modelChain(undefined)).toEqual([...FALLBACK_MODELS]);
+    expect(modelChain('')).toEqual([...FALLBACK_MODELS]);
+  });
+
+  it('moves to the next model when one is rate-limited', async () => {
+    const fetchImpl = vi
+      .fn()
+      .mockResolvedValueOnce(new Response('{}', { status: 429 }))
+      .mockResolvedValueOnce(
+        new Response(JSON.stringify({ choices: [{ message: { content: '{"answer":"from b","receipts":[]}' } }] })),
+      );
+    const answer = await askTwin('hi', { apiKey: 'k', model: 'a,b,c' }, fetchImpl);
+    expect(answer).toMatchObject({ text: 'from b', source: 'twin' });
+    expect(fetchImpl).toHaveBeenCalledTimes(2);
+    expect(callModel(fetchImpl, 1)).toBe('b');
+  });
+
+  it('stops on a client error instead of burning every model', async () => {
+    const fetchImpl = vi.fn(async () => new Response('{}', { status: 401 }));
+    expect((await askTwin('What is NOVA?', { apiKey: 'bad', model: 'a,b,c' }, fetchImpl)).source).toBe('offline');
+    expect(fetchImpl).toHaveBeenCalledTimes(1);
+  });
+
+  it('goes offline when every model is busy', async () => {
+    const fetchImpl = vi.fn(async () => new Response('{}', { status: 429 }));
+    expect((await askTwin('What is NOVA?', { apiKey: 'k', model: 'a,b' }, fetchImpl)).source).toBe('offline');
+    expect(fetchImpl).toHaveBeenCalledTimes(2);
+  });
+
+  it('hides qwen reasoning from the reply', async () => {
+    const fetchImpl = llmReply('{"answer":"ok","receipts":[]}');
+    await askTwin('hi', { apiKey: 'k', model: 'qwen/qwen3.8-27b' }, fetchImpl);
+    expect(callModel(fetchImpl, 0)).toBe('qwen/qwen3.8-27b');
+    expect(JSON.parse((fetchImpl.mock.calls[0] as unknown as [string, RequestInit])[1].body as string).reasoning_format).toBe('hidden');
   });
 });
