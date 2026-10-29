@@ -40,6 +40,9 @@ export function Footer({ motion, onMotion }: Props) {
               Spoken into Wispr Flow, built with Claude Code, shipped on Vercel. Every claim here links to proof or says
               it has none.
             </p>
+            <p className="footer__made">
+              Visits are counted anonymously for the growth experiment — no cookies, and no IP addresses are stored.
+            </p>
             <button type="button" className="switch" aria-pressed={!motion} onClick={() => onMotion(!motion)}>
               <span className="switch__track" aria-hidden="true">
                 <span className="switch__thumb" />
