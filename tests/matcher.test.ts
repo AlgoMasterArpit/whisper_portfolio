@@ -88,10 +88,10 @@ describe('recruiter questions', () => {
     'What is Kin?',
     'Explain your two-tier pipeline',
     'How many DSA problems have you solved?',
-    'What did you learn from the NDA year?',
+    'What did you learn from MeterMind?',
     'What would you do for Wispr in India?',
     'Kaun si languages aati hain?',
-    'Tell me something not on your resume',
+    'Tell me about Electrothon',
     'What are you bad at?',
     'How do you debug a hard problem?',
     'What is your CGPA?',
@@ -129,5 +129,18 @@ describe('tokenize', () => {
   it('maps common Hinglish words onto the English facts', () => {
     expect(tokenize('Tumne sabse badi galti kya ki?')).toContain('mistake');
     expect(tokenize('kaam aur padhai')).toEqual(['work', 'college']);
+  });
+});
+
+describe('removed topics', () => {
+  it.each(['Tell me about your NDA year', 'Did you take a drop year?', 'What will you do with the $3,000 grant?'])(
+    '“%s” is not on record',
+    (question) => {
+      expect(matchOffline(question).text).not.toMatch(/\bNDA\b|\bSSB\b|drop|percentile|MacBook/);
+    },
+  );
+
+  it('frames Electrothon as team work', () => {
+    expect(matchOffline('What did you do at Electrothon?').text).toContain('team');
   });
 });
