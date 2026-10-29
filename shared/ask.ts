@@ -120,3 +120,28 @@ export function createRateLimiter(limit: number, windowMs: number) {
     return true;
   };
 }
+
+// ponytail: per-instance memory; a warm instance serves repeat questions (the suggestion chips) for free.
+export function createAnswerCache(max: number, ttlMs: number) {
+  const entries = new Map<string, { answer: Answer; at: number }>();
+  const keyOf = (question: string) => question.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, ' ').trim();
+  return {
+    get(question: string, now = Date.now()): Answer | undefined {
+      const key = keyOf(question);
+      const hit = entries.get(key);
+      if (!hit) return undefined;
+      if (now - hit.at > ttlMs) {
+        entries.delete(key);
+        return undefined;
+      }
+      return hit.answer;
+    },
+    set(question: string, answer: Answer, now = Date.now()): void {
+      if (answer.source !== 'twin') return;
+      const key = keyOf(question);
+      entries.delete(key);
+      entries.set(key, { answer, at: now });
+      if (entries.size > max) entries.delete(entries.keys().next().value!);
+    },
+  };
+}
