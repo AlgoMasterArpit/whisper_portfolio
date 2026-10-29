@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { act, cleanup, fireEvent, render, screen, within } from '@testing-library/react';
+import { act, cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 import { App } from '../src/App';
 import { DailyInstalls } from '../src/components/GrowthLab';
@@ -93,7 +93,11 @@ describe('DailyInstalls', () => {
 describe('Spoken answers', () => {
   it('reads the new answer aloud once the switch is on', async () => {
     const spoken: string[] = [];
-    vi.stubGlobal('speechSynthesis', { cancel() {}, getVoices: () => [], speak: (u: { text: string }) => spoken.push(u.text) });
+    vi.stubGlobal('speechSynthesis', {
+      cancel() {},
+      getVoices: () => [{ lang: 'en-IN', name: 'Microsoft Neerja Online (Natural)' }],
+      speak: (u: { text: string }) => spoken.push(u.text),
+    });
     vi.stubGlobal(
       'SpeechSynthesisUtterance',
       class {
@@ -109,9 +113,9 @@ describe('Spoken answers', () => {
     await act(async () => {
       fireEvent.click(screen.getByRole('button', { name: 'What would you do on day one?' }));
     });
-    expect(spoken).toEqual(['Spoken reply.']);
+    await waitFor(() => expect(spoken).toEqual(['Spoken reply.']));
     fireEvent.click(screen.getByRole('button', { name: /▶ read aloud/i }));
-    expect(spoken).toEqual(['Spoken reply.', 'Spoken reply.']);
+    await waitFor(() => expect(spoken).toEqual(['Spoken reply.', 'Spoken reply.']));
   });
 });
 
