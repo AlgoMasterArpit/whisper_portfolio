@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState, type PointerEvent } from 'react';
 import { resolveReceipts } from '../../shared/receipts';
 import { SCENES, closingLine, matchCount, type ExhibitKind } from '../data/story';
-import { RawStrip } from './RawStrip';
 import { ProofList } from './Receipt';
 
 const KIND_LABEL: Record<ExhibitKind, string> = { risk: 'Risk', mistake: 'Mistake', call: 'Judgement call' };
@@ -58,13 +57,12 @@ export function Museum() {
       <div className="museum__dark" aria-hidden="true" />
       <div className="wrap museum__inner">
         <div data-reveal>
-          <RawStrip question="q3" />
           <p className="kicker">03 — Mistake museum</p>
           <h2 className="title">
             Walk through <em>my worst calls.</em>
           </h2>
           <p className="lede">
-            Six real decisions. Make each call before you see mine. Bring a torch — the lights are off in here.
+            Real decisions I made. Make each call before you see mine. Bring a torch — the lights are off in here.
           </p>
         </div>
 

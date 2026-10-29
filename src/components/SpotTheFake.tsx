@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { findReceipt } from '../../shared/receipts';
 import { ROUNDS, fakeIndex, rank } from '../data/game';
-import { RawStrip } from './RawStrip';
 import { Stamp } from './Receipt';
 
 export function SpotTheFake() {
@@ -33,7 +32,6 @@ export function SpotTheFake() {
     <section id="game" className="section game">
       <div className="wrap">
         <div data-reveal>
-          <RawStrip question="q9" />
           <p className="kicker">05 — Spot the fake</p>
           <h2 className="title">
             One of these <em>is a lie.</em>
