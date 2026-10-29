@@ -26,6 +26,8 @@ Turn on **Raw mode** (nav switch or the <kbd>R</kbd> key) and every section show
 
 - **Voice commands** use the browser's Web Speech API (`en-IN`), so Hinglish works: "museum", "growth lab", "khel", "raw mode on", "animation band karo", "upar". Press <kbd>?</kbd> for the full list and <kbd>V</kbd> to toggle the mic.
 - **Live spectrum:** the Web Audio `AnalyserNode` feeds the hero's canvas ridgeline. There's no audio library, and nothing is recorded or uploaded.
+- Spoken Hindi that comes back in Devanagari works too: "गलतियाँ दिखाओ", "ऊपर जाओ", "पूछो …".
+- **The twin talks back.** Switch on *Read answers aloud* (or say "bolke sunao") and answers are spoken with the browser's speech synthesis, using an Indian English voice when the device has one. Every answer also has a ▶ button.
 - In browsers without speech recognition (Firefox), the waveform still reacts to your voice and typing works everywhere.
 
 ## How the twin stays honest
@@ -53,6 +55,7 @@ npm install
 cp .env.example .env     # optional: add LLM_API_KEY for the AI twin
 npm run dev              # http://localhost:5173 (serves /api/ask locally too)
 npm test                 # vitest: logic, API and UI
+npm run e2e              # playwright: real chromium, desktop + phone, against a production build
 npm run build            # typecheck + production build
 ```
 
@@ -78,7 +81,8 @@ src/
   components/         one file per section
   data/               museum scenes, game rounds, ledger, campaign log, mis-hearings
   lib/                voice hook, command parser, ridgeline math, transcript parser
-tests/                111 tests across logic, API and UI
+tests/                222 unit tests: logic, API, UI, contrast and config
+e2e/                  Playwright specs, run in CI on every push
 ```
 
 ## Updating the growth experiment
@@ -93,7 +97,13 @@ The tiles, chart and table update on their own. A test checks that the log stays
 
 ## Accessibility
 
-Keyboard shortcuts are ignored while you're typing. There's a skip link, `aria-live` regions for printed answers and voice feedback, a native `<dialog>` for help, and a table view for the chart. Motion is reduced automatically when `prefers-reduced-motion` is set, and there's also a toggle in the footer.
+Checked with axe-core in every interactive state (zero violations). Every text colour meets WCAG AA 4.5:1, and a test reads the tokens straight from the stylesheet so it stays that way. Keyboard shortcuts are ignored while you're typing, focus moves to each new museum exhibit, and there's a skip link, `aria-live` regions for printed answers and voice feedback, a native `<dialog>` for help, and a table view for the chart. Motion is reduced automatically when `prefers-reduced-motion` is set, and there's also a toggle in the footer.
+
+## Security and performance
+
+- Strict Content-Security-Policy: scripts, fonts and API calls are same-origin only, and the microphone is allowed for this page alone (`vercel.json`).
+- Fonts are self-hosted, so no request goes to Google when someone visits.
+- Hashed assets are cached for a year, off-screen sections skip rendering (`content-visibility`), and the hero canvas stops completely once it scrolls out of view.
 
 ---
 
