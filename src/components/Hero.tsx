@@ -57,7 +57,7 @@ export function Hero({ readSpectrum, motion, listening, interim, heard, voiceErr
           </p>
         </div>
 
-        <div className="hero__receipt" aria-label="Summary receipt">
+        <aside className="hero__receipt" aria-label="Summary receipt">
           <div className="printer-slot" aria-hidden="true" />
           <div className="receipt receipt--print">
             <header className="receipt__head">
@@ -82,7 +82,7 @@ export function Hero({ readSpectrum, motion, listening, interim, heard, voiceErr
             </div>
             <Barcode seed="arpit-tyagi-receipts" />
           </div>
-        </div>
+        </aside>
       </div>
     </header>
   );
