@@ -58,7 +58,7 @@ export function VoiceRidge({ readSpectrum, motion }: Props) {
     };
 
     const resize = () => {
-      const dpr = Math.min(2, window.devicePixelRatio || 1);
+      const dpr = Math.min(canvas.clientWidth > 1600 ? 1.5 : 2, window.devicePixelRatio || 1);
       width = canvas.clientWidth;
       height = canvas.clientHeight;
       canvas.width = Math.round(width * dpr);
@@ -72,20 +72,11 @@ export function VoiceRidge({ readSpectrum, motion }: Props) {
     ro?.observe(canvas);
     if (!motion) return () => ro?.disconnect();
 
-    let visible = true;
-    const io =
-      typeof IntersectionObserver === 'undefined'
-        ? null
-        : new IntersectionObserver(([entry]) => {
-            visible = entry?.isIntersecting ?? true;
-          });
-    io?.observe(canvas);
-
     let raf = 0;
     let frame = 0;
     const tick = () => {
       raf = requestAnimationFrame(tick);
-      if (!visible || ++frame % 3) return;
+      if (++frame % 3) return;
       t += 0.08;
       const spectrum = readSpectrum();
       level = spectrum ? loudness(spectrum) : 0;
@@ -93,10 +84,23 @@ export function VoiceRidge({ readSpectrum, motion }: Props) {
       rows.push(spectrum && level > 0.02 ? spectrumRow(spectrum, POINTS) : syntheticRow(POINTS, t, 3));
       draw();
     };
-    raf = requestAnimationFrame(tick);
+    const play = () => {
+      if (!raf) raf = requestAnimationFrame(tick);
+    };
+    const pause = () => {
+      cancelAnimationFrame(raf);
+      raf = 0;
+    };
+
+    const io =
+      typeof IntersectionObserver === 'undefined'
+        ? null
+        : new IntersectionObserver(([entry]) => (entry?.isIntersecting ? play() : pause()));
+    io?.observe(canvas);
+    if (!io) play();
 
     return () => {
-      cancelAnimationFrame(raf);
+      pause();
       ro?.disconnect();
       io?.disconnect();
     };
