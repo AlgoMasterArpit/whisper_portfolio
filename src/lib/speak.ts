@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 export interface VoiceLike {
   lang: string;
@@ -40,6 +40,31 @@ export function canSpeak(): boolean {
 let turn = 0;
 let playing: HTMLAudioElement | null = null;
 const clips = new Map<string, string>();
+
+let speakingNow = false;
+const listeners = new Set<(speaking: boolean) => void>();
+
+function setSpeaking(next: boolean): void {
+  if (speakingNow === next) return;
+  speakingNow = next;
+  listeners.forEach((l) => l(next));
+}
+
+export function isSpeaking(): boolean {
+  return speakingNow;
+}
+
+export function useSpeaking(): boolean {
+  const [speaking, setState] = useState(speakingNow);
+  useEffect(() => {
+    listeners.add(setState);
+    setState(speakingNow);
+    return () => {
+      listeners.delete(setState);
+    };
+  }, []);
+  return speaking;
+}
 
 async function twinClip(text: string): Promise<string | null> {
   const hit = clips.get(text);
@@ -83,17 +108,29 @@ async function speakInBrowser(text: string, mine: number): Promise<void> {
     utterance.lang = voice.lang;
   }
   utterance.rate = 1.03;
+  const done = () => {
+    if (mine === turn) setSpeaking(false);
+  };
+  utterance.onend = done;
+  utterance.onerror = done;
   window.speechSynthesis.speak(utterance);
 }
 
 export async function speak(text: string): Promise<void> {
   stopSpeaking();
   const mine = turn;
+  setSpeaking(true);
   const url = typeof Audio === 'undefined' ? null : await twinClip(text);
   if (mine !== turn) return;
   if (url) {
     const audio = new Audio(url);
     playing = audio;
+    audio.onended = () => {
+      if (mine === turn) {
+        playing = null;
+        setSpeaking(false);
+      }
+    };
     try {
       await audio.play();
       return;
@@ -101,7 +138,8 @@ export async function speak(text: string): Promise<void> {
       playing = null;
     }
   }
-  await speakInBrowser(text, mine);
+  if (browserVoice()) await speakInBrowser(text, mine);
+  else if (mine === turn) setSpeaking(false);
 }
 
 export function stopSpeaking(): void {
@@ -109,6 +147,7 @@ export function stopSpeaking(): void {
   playing?.pause();
   playing = null;
   if (browserVoice()) window.speechSynthesis.cancel();
+  setSpeaking(false);
 }
 
 const KEY = 'receipts:speak';
