@@ -20,7 +20,7 @@ export const KNOWLEDGE = `
 - Languages: C++, Python, JavaScript, SQL; Kotlin for N.O.V.A [github] [nova].
 - Frontend: React, Redux Toolkit, React Router, Tailwind CSS, HTML, CSS — used in SeniorSays and at Carboledger [seniorsays] [carboledger].
 - Backend and databases: FastAPI, Node.js, Express.js, REST APIs, JWT auth, PostgreSQL, SQLAlchemy, Alembic — used in Legal Sarthi [legal-sarthi].
-- Cloud and DevOps: AWS (EC2, Secrets Manager), Docker, CI/CD with GitHub Actions, Git/GitHub, Vercel [legal-sarthi] [this-repo].
+- Cloud and DevOps: AWS (EC2, Secrets Manager), Docker, CI/CD (GitHub Actions), Git/GitHub, Vercel. Docker, AWS EC2 and Secrets Manager were used in Legal Sarthi [legal-sarthi]; GitHub Actions CI and Vercel run this site, which does not use Docker [this-repo].
 - AI: Claude Code, Groq (Llama-3), OpenAI API, sentence-transformers, prompt engineering [legal-sarthi] [seniorsays].
 - CS fundamentals: Data Structures & Algorithms, OOP, DBMS, Operating Systems, Computer Networks [codolio].
 
