@@ -37,10 +37,7 @@ Valid receipt ids: ${RECEIPTS.map((r) => r.id).join(', ')}.`;
 
 export function buildMessages(question: string) {
   return [
-    { role: 'system', content: `${RULES}
-
-FACTS:
-${selectContext(question)}` },
+    { role: 'system', content: `${RULES}\n\nFACTS:\n${selectContext(question)}` },
     { role: 'user', content: question },
   ] as const;
 }
