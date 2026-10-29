@@ -1245,8 +1245,7 @@ button {
   font-size: 12px;
 }
 
-.evidence__label,
-.offer__label {
+.evidence__label {
   margin: 0;
   font-family: var(--mono);
   font-size: 11px;
@@ -1255,54 +1254,18 @@ button {
   color: var(--stamp-bright);
 }
 
-.offer {
-  position: relative;
+.idea {
   margin-top: 16px;
-  padding: clamp(28px, 5vw, 56px);
+  padding: 24px;
+  border: 1px dashed var(--line-on-ink);
   border-radius: var(--radius);
-  background: var(--stamp-text);
-  color: var(--paper);
-  overflow: hidden;
+  background: color-mix(in srgb, var(--ink-2) 92%, transparent);
 }
 
-.offer::after {
-  content: '9.0';
-  position: absolute;
-  right: -10px;
-  bottom: -40px;
-  font-size: clamp(120px, 22vw, 280px);
-  font-weight: 800;
-  letter-spacing: -0.06em;
-  line-height: 1;
-  color: transparent;
-  -webkit-text-stroke: 1.5px color-mix(in srgb, var(--paper) 35%, transparent);
-  pointer-events: none;
-}
-
-.offer .offer__label {
-  color: var(--paper);
-  opacity: 0.8;
-}
-
-.offer h3 {
-  position: relative;
-  margin: 8px 0 14px;
-  font-size: clamp(34px, 5.6vw, 72px);
-  line-height: 0.95;
-  letter-spacing: -0.04em;
-}
-
-.offer h3 span {
-  font-family: var(--serif);
-  font-style: italic;
-  font-weight: 400;
-}
-
-.offer > p:last-child {
-  position: relative;
-  max-width: 58ch;
-  margin: 0;
-  font-size: 18px;
+.idea > p:last-child {
+  max-width: 70ch;
+  margin: 8px 0 0;
+  color: var(--muted-on-ink);
 }
 
 .experiment {
