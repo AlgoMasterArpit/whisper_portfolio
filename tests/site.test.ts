@@ -60,3 +60,11 @@ describe('public files', () => {
     for (const icon of manifest.icons) expect(existsSync(new URL(`../public${icon.src}`, import.meta.url)), icon.src).toBe(true);
   });
 });
+
+describe('voice playback under the csp', () => {
+  it('lets the page play the twin voice from a blob url', () => {
+    const config = JSON.parse(read('vercel.json')) as { headers: { source: string; headers: { key: string; value: string }[] }[] };
+    const csp = config.headers[0]!.headers.find((h) => h.key === 'Content-Security-Policy')!.value;
+    expect(csp).toContain("media-src 'self' blob:");
+  });
+});
