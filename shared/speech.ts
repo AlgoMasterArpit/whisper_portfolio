@@ -2,7 +2,7 @@ import { DEFAULT_BASE_URL } from './ask.js';
 
 export const TTS_MODEL = 'canopylabs/orpheus-v1-english';
 export const TTS_VOICES = ['austin', 'daniel', 'troy', 'autumn', 'diana', 'hannah'] as const;
-export const DEFAULT_VOICE = 'daniel';
+export const DEFAULT_VOICE = 'troy';
 export const MAX_SPEAK_CHARS = 600;
 const CHUNK_CHARS = 180;
 const TTS_TIMEOUT_MS = 15_000;
