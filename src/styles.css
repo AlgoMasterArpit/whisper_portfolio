@@ -42,8 +42,10 @@
   --text-on-paper: #1a1814;
   --muted-on-paper: #5f584b;
   --stamp: #d4472c;
-  --verified: #2f7d4f;
-  --self: #a86b12;
+  --stamp-text: #bc3f27;
+  --stamp-bright: #d8573e;
+  --verified: #2d774b;
+  --self: #955f10;
   --highlight: #f2ff5c;
 
   --display: 'Bricolage Grotesque', system-ui, sans-serif;
@@ -253,7 +255,7 @@ button {
 }
 
 .stamp--no-receipt {
-  color: var(--stamp);
+  color: var(--stamp-text);
 }
 
 @keyframes stamp {
@@ -563,8 +565,8 @@ button {
 }
 
 .btn--mic.is-live {
-  background: var(--stamp);
-  border-color: var(--stamp);
+  background: var(--stamp-text);
+  border-color: var(--stamp-text);
   color: var(--paper);
 }
 
@@ -840,7 +842,7 @@ button {
 }
 
 .answer__error {
-  color: var(--stamp);
+  color: var(--stamp-text);
   margin: 0;
 }
 
@@ -1053,7 +1055,7 @@ button {
 }
 
 .exhibit__kind--mistake {
-  color: var(--stamp);
+  color: var(--stamp-bright);
 }
 
 .exhibit__kind--risk {
@@ -1249,7 +1251,7 @@ button {
   font-size: 11px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--stamp);
+  color: var(--stamp-bright);
 }
 
 .offer {
@@ -1257,7 +1259,7 @@ button {
   margin-top: 16px;
   padding: clamp(28px, 5vw, 56px);
   border-radius: var(--radius);
-  background: var(--stamp);
+  background: var(--stamp-text);
   color: var(--paper);
   overflow: hidden;
 }
