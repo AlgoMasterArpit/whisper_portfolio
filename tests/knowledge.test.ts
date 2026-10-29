@@ -13,9 +13,14 @@ describe('knowledge base', () => {
   it('keeps the corrected facts, not the mis-transcribed ones', () => {
     expect(KNOWLEDGE).toContain('8.94');
     expect(KNOWLEDGE).toContain('Carboledger');
-    expect(KNOWLEDGE).toContain('Electrothon 9.0');
+    expect(KNOWLEDGE).toContain('team effort');
     expect(KNOWLEDGE).toContain('300 ms');
     expect(KNOWLEDGE).not.toMatch(/9\.84|Carbolager|Mindpointo|ECS/);
+  });
+
+  it('keeps the topics I asked to remove off the record', () => {
+    expect(KNOWLEDGE).not.toMatch(/\bNDA\b|\bSSB\b/);
+    expect(KNOWLEDGE).not.toMatch(/percentile|drop year|second drop|time-box|stock|macbook|summer holidays/i);
   });
 });
 
