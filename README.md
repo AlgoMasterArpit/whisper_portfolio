@@ -65,6 +65,8 @@ npm run build            # typecheck + production build
 |---|---|---|
 | `LLM_API_KEY` | — | Leave empty to use offline mode |
 | `LLM_BASE_URL` | `https://api.groq.com/openai/v1` | Any OpenAI-compatible endpoint |
+| `WISPR_LINK` | `https://wisprflow.ai` | Where *Try Wispr Flow* sends people (your referral link) |
+| `KV_REST_API_URL` / `KV_REST_API_TOKEN` | — | Added automatically when Upstash Redis is connected in Vercel |
 | `TTS_VOICE` | `troy` | Orpheus voice: austin, daniel, troy, autumn, diana, hannah |
 | `LLM_MODEL` | `openai/gpt-oss-120b,openai/gpt-oss-20b,qwen/qwen3.8-27b` | Comma-separated chain; the next model takes over when one hits its rate limit |
 
@@ -75,6 +77,7 @@ npm run build            # typecheck + production build
 ```
 api/ask.ts            serverless endpoint (validation, rate limit)
 api/speak.ts          text-to-speech endpoint (Orpheus, chunked, cached)
+api/hit.ts, go.ts, stats.ts   anonymous live counter for the growth experiment
 shared/               used by both server and browser
   knowledge.ts        facts the twin may use, each tagged with receipt ids
   receipts.ts         the proof catalog + verdict rules
@@ -89,15 +92,16 @@ tests/                222 unit tests: logic, API, UI, contrast and config
 e2e/                  Playwright specs, run in CI on every push
 ```
 
-## Updating the growth experiment
+## The growth experiment counts itself
 
-Add a row to `CAMPAIGN.days` in [`src/data/campaign.ts`](src/data/campaign.ts) each day:
+Nobody types the Growth Lab numbers in — not even me.
 
-```ts
-{ date: '2026-10-30', reach: 140, installs: 6, note: 'first reel in 3 campus groups' }
-```
+- Share the site with a channel tag: `https://whisper-portfolio.vercel.app/?ref=linkedin` (or `whatsapp`, `instagram`, `x`, `college`). Untagged visits are classified from the referrer.
+- Each browser session sends one beacon to `/api/hit`. It stores a visit count, a channel count and a HyperLogLog of **salted, daily-rotating SHA-256 hashes** for unique visitors — no cookies, no IPs. Link-preview bots (LinkedInBot, WhatsApp, Facebook, curl…) are ignored.
+- **Try Wispr Flow** goes through `/api/go?to=wispr`, which counts the click and redirects (allow-listed targets only, so it is not an open redirect). Set `WISPR_LINK` to a referral link to send people there.
+- `/api/stats` serves the raw numbers (edge-cached for a minute) and the Growth Lab chart reads them live. Anyone can open it.
 
-The tiles, chart and table update on their own. A test checks that the log stays in order and that installs never exceed reach.
+Storage is Upstash Redis through Vercel's marketplace (free tier). Connecting it adds `KV_REST_API_URL` and `KV_REST_API_TOKEN` to the project; without them the counter quietly does nothing.
 
 ## Accessibility
 
