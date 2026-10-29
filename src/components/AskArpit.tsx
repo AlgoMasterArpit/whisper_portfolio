@@ -31,7 +31,7 @@ export function AskArpit({ entries, busy, onAsk, dictating, interim, onDictate, 
   const latest = entries[0];
 
   useEffect(() => {
-    if (!speakOn || !latest?.answer || latest.id <= spoken.current) return;
+    if (!(speakOn || latest?.voice) || !latest?.answer || latest.id <= spoken.current) return;
     spoken.current = latest.id;
     void speak(latest.answer.text);
   }, [speakOn, latest]);
