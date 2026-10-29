@@ -15,10 +15,10 @@ Every claim on the page links to proof. If a claim has no proof, the page says s
 | **Hero** | A live ridgeline of your voice. Press *Talk to this page* and your mic's spectrum scrolls across the screen. Spoken commands also work here: "mistakes dikhao", "ask why growth?". |
 | **Ask** | An AI twin of me. Ask by voice or text, in English or Hinglish. Each answer prints as a receipt with links to proof and a stamp: *verified*, *self-reported* or *no receipt*. |
 | **Ledger** | My work as an itemised receipt. Tap any line to see the proof behind it. |
-| **Mistake Museum** | Six real decisions from my life as a choose-your-own-path game. You make the call first, then see what I did, how it turned out and what I learned. Your cursor is a torch in a dark room. |
-| **Growth Lab** | Growth work I did before I called it growth, a day-one offer (Electrothon 9.0 × Wispr Flow), and a live experiment logged daily, flops included. |
+| **Mistake Museum** | Real decisions from my projects as a choose-your-own-path game. You make the call first, then see what I did, how it turned out and what I learned. Your cursor is a torch in a dark room. |
+| **Growth Lab** | Growth work I did with my team before I called it growth, an idea I'd explore, and a live experiment logged daily, flops included. |
 | **Spot the Fake** | Four claims about me, one of them false. Can you find the claim with no receipt? |
-| **The Tape** | Raw → shipped: every unedited voice take, the mis-hearings Wispr made ("Electrothon Mindpointo" → 9.0), and the prompts I spoke to build this. |
+| **The Tape** | Raw → shipped: the unedited voice takes behind the page and the mis-hearings Wispr made along the way. |
 
 Turn on **Raw mode** (nav switch or the <kbd>R</kbd> key) and every section shows the raw take it came from.
 
