@@ -97,7 +97,7 @@ export function App() {
   );
 
   const voice = useVoice(onFinal);
-  const { listening, start, stop } = voice;
+  const { listening, paused, start, stop, release } = voice;
 
   const listen = useCallback(
     (mode: VoiceMode) => {
@@ -108,10 +108,20 @@ export function App() {
   );
 
   const toggleCommands = useCallback(() => {
-    if (listening === 'command') stop();
-    else if (speaking) stopSpeaking();
+    if (listening === 'command') {
+      stopSpeaking();
+      stop();
+    } else if (speaking) stopSpeaking();
     else listen('command');
   }, [listen, listening, speaking, stop]);
+
+  const answering = busy || speaking;
+  useEffect(() => {
+    if (listening !== 'command' || !paused || answering) return;
+    // give the speaker a beat to go quiet before the mic opens again
+    const timer = setTimeout(release, 450);
+    return () => clearTimeout(timer);
+  }, [answering, listening, paused, release]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -139,8 +149,9 @@ export function App() {
           heard={heard}
           voiceError={voice.error}
           speaking={speaking}
+          paused={paused}
           onTalk={toggleCommands}
-          onStop={stop}
+          onStop={toggleCommands}
         />
         <AskArpit
           entries={entries}
