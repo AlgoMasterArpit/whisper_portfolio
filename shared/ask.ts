@@ -65,7 +65,7 @@ export function parseTwinReply(content: string): Answer | null {
   const resolved = answerable === false ? [] : resolveReceipts(Array.isArray(receipts) ? receipts : []);
   const general = kind === 'general' && answerable !== false && !resolved.length;
   return {
-    text: answer.trim().slice(0, MAX_ANSWER_LENGTH),
+    text: answer.replace(/\s*\[[a-z0-9-]+\]/g, '').trim().slice(0, MAX_ANSWER_LENGTH),
     receipts: resolved,
     verdict: general ? 'general' : verdictFor(resolved),
     source: 'twin',
