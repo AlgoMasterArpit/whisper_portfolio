@@ -12,6 +12,7 @@ import { SpotTheFake } from './components/SpotTheFake';
 import { looksLikeQuestion, parseCommand, type Command, type SectionId } from './lib/commands';
 import { useMotion, useReveal } from './lib/motion';
 import { RawContext } from './lib/raw';
+import { useSpeakPref } from './lib/speak';
 import { useAsk } from './lib/useAsk';
 import { useVoice, type VoiceMode } from './lib/voice';
 
@@ -32,6 +33,7 @@ function isTyping(target: EventTarget | null): boolean {
 export function App() {
   const [raw, setRaw] = useState(false);
   const [motion, setMotion] = useMotion();
+  const [speakOn, setSpeakOn] = useSpeakPref();
   const [helpOpen, setHelpOpen] = useState(false);
   const [heard, setHeard] = useState('');
   const { entries, ask, busy } = useAsk();
@@ -65,12 +67,15 @@ export function App() {
         case 'ask':
           askAndShow(command.question);
           return `→ asking: ${command.question}`;
+        case 'speak':
+          setSpeakOn(command.on);
+          return command.on ? '→ answers read aloud' : '→ answers silent';
         case 'help':
           setHelpOpen(true);
           return '→ help';
       }
     },
-    [askAndShow, scrollTo, setMotion],
+    [askAndShow, scrollTo, setMotion, setSpeakOn],
   );
 
   const onFinal = useCallback(
@@ -134,6 +139,8 @@ export function App() {
           interim={voice.interim}
           onDictate={() => void start('dictate')}
           onStopDictate={stop}
+          speakOn={speakOn}
+          onSpeak={setSpeakOn}
         />
         <Ledger />
         <Museum />
