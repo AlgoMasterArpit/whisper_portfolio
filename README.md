@@ -59,7 +59,7 @@ npm run build            # typecheck + production build
 |---|---|---|
 | `LLM_API_KEY` | — | Leave empty to use offline mode |
 | `LLM_BASE_URL` | `https://api.groq.com/openai/v1` | Any OpenAI-compatible endpoint |
-| `LLM_MODEL` | `llama-3.3-70b-versatile` | |
+| `LLM_MODEL` | `openai/gpt-oss-120b` | Any chat model on that endpoint |
 
 **Deploy:** import the repo in Vercel and set the env vars. Vite is detected automatically, and `api/ask.ts` becomes a serverless function.
 
