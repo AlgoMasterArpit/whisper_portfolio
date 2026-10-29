@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
+import { SCENES } from '../src/data/story';
 
 const errorsOn = (page: Page) => {
   const errors: string[] = [];
@@ -44,7 +45,7 @@ test('raw mode shows the spoken takes behind each section', async ({ page }) => 
 test('the museum walk ends with a score', async ({ page }) => {
   await page.goto('/#museum');
   const museum = page.locator('#museum');
-  for (let i = 0; i < 6; i++) {
+  for (let i = 0; i < SCENES.length; i++) {
     await museum.locator('.option').first().click();
     await museum.getByRole('button', { name: /next exhibit|see how you did/i }).click();
   }
