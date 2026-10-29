@@ -43,6 +43,7 @@ question ──► /api/ask ──► LLM (any OpenAI-compatible API, Groq by de
 - The model never decides the stamp. `verdictFor()` does: any public link → **verified**, only self-reported proof → **self-reported**, nothing → **no receipt**.
 - Topics I have no proof for (paid ads, foreign languages and so on) skip the model entirely and return **no receipt**.
 - The question is sent as data, never as instructions. Requests are rate-limited, size-capped and time out after 12 s.
+- Only the knowledge sections a question needs go into the prompt (`shared/context.ts`), repeat questions come from an in-memory cache, and a rate-limited model hands over to the next one in the chain — so Groq's free tier holds up when judges click every chip.
 - With no API key configured, the site still works fully on the offline matcher.
 
 ## Run it
@@ -59,7 +60,7 @@ npm run build            # typecheck + production build
 |---|---|---|
 | `LLM_API_KEY` | — | Leave empty to use offline mode |
 | `LLM_BASE_URL` | `https://api.groq.com/openai/v1` | Any OpenAI-compatible endpoint |
-| `LLM_MODEL` | `openai/gpt-oss-120b` | Any chat model on that endpoint |
+| `LLM_MODEL` | `openai/gpt-oss-120b,openai/gpt-oss-20b,qwen/qwen3.8-27b` | Comma-separated chain; the next model takes over when one hits its rate limit |
 
 **Deploy:** import the repo in Vercel and set the env vars. Vite is detected automatically, and `api/ask.ts` becomes a serverless function.
 
