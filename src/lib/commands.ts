@@ -5,6 +5,7 @@ export type Command =
   | { type: 'goto'; section: SectionId }
   | { type: 'raw'; on: boolean }
   | { type: 'motion'; on: boolean }
+  | { type: 'speak'; on: boolean }
   | { type: 'ask'; question: string }
   | { type: 'help' };
 
@@ -15,6 +16,7 @@ export const COMMAND_HELP: readonly { say: string; does: string }[] = [
   { say: '“projects” · “work”', does: 'opens the ledger' },
   { say: '“play” · “khel”', does: 'starts Spot the Fake' },
   { say: '“raw mode on / off”', does: 'shows what I actually said' },
+  { say: '“bolke sunao” · “read aloud off”', does: 'the twin speaks its answers' },
   { say: '“animation band karo”', does: 'reduces motion' },
   { say: '“upar” · “top”', does: 'back to the top' },
 ];
@@ -44,6 +46,10 @@ export function parseCommand(input: string): Command | null {
     return { type: 'raw', on: !/\b(off|band|hide|hatao|stop)\b/.test(text) };
   }
   if (/\bshipped\b/.test(text)) return { type: 'raw', on: false };
+
+  if (/\b(aloud|sunao|mute|unmute)\b/.test(text)) {
+    return { type: 'speak', on: /\bunmute\b/.test(text) || !/\b(off|band|stop|mute|chup)\b/.test(text) };
+  }
 
   if (/\b(animations?|motion)\b/.test(text)) {
     return { type: 'motion', on: !/\b(off|band|stop|reduce|kam|less)\b/.test(text) };
