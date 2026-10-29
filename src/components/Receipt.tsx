@@ -5,6 +5,7 @@ export const VERDICT_LABEL: Record<Verdict, string> = {
   verified: 'Verified',
   'self-reported': 'Self-reported',
   'no-receipt': 'No receipt',
+  general: 'Explained',
 };
 
 interface ReceiptProps {

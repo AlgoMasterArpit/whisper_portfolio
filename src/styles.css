@@ -254,6 +254,10 @@ button {
   color: var(--self);
 }
 
+.stamp--general {
+  color: var(--muted-on-paper);
+}
+
 .stamp--no-receipt {
   color: var(--stamp-text);
 }
