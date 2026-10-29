@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
+import type { Answer } from '../shared/matcher';
 import {
   DEFAULT_BASE_URL,
   DEFAULT_MODEL,
@@ -6,6 +7,7 @@ import {
   MAX_QUESTION_LENGTH,
   askTwin,
   buildMessages,
+  createAnswerCache,
   createRateLimiter,
   modelChain,
   parseTwinReply,
@@ -163,5 +165,36 @@ describe('model chain', () => {
     await askTwin('hi', { apiKey: 'k', model: 'qwen/qwen3.8-27b' }, fetchImpl);
     expect(callModel(fetchImpl, 0)).toBe('qwen/qwen3.8-27b');
     expect(JSON.parse((fetchImpl.mock.calls[0] as unknown as [string, RequestInit])[1].body as string).reasoning_format).toBe('hidden');
+  });
+});
+
+describe('createAnswerCache', () => {
+  const twin: Answer = { text: 'hi', receipts: [], verdict: 'no-receipt', source: 'twin' };
+
+  it('serves the same question regardless of case and punctuation', () => {
+    const cache = createAnswerCache(10, 1000);
+    cache.set('Why Wispr?', twin, 0);
+    expect(cache.get('why wispr', 10)).toEqual(twin);
+  });
+
+  it('expires entries after the ttl', () => {
+    const cache = createAnswerCache(10, 1000);
+    cache.set('q', twin, 0);
+    expect(cache.get('q', 1001)).toBeUndefined();
+  });
+
+  it('never caches offline answers', () => {
+    const cache = createAnswerCache(10, 1000);
+    cache.set('q', { ...twin, source: 'offline' }, 0);
+    expect(cache.get('q', 1)).toBeUndefined();
+  });
+
+  it('evicts the oldest entry when full', () => {
+    const cache = createAnswerCache(2, 1000);
+    cache.set('a', twin, 0);
+    cache.set('b', twin, 0);
+    cache.set('c', twin, 0);
+    expect(cache.get('a', 1)).toBeUndefined();
+    expect(cache.get('c', 1)).toEqual(twin);
   });
 });
