@@ -114,3 +114,38 @@ describe('Spoken answers', () => {
     expect(spoken).toEqual(['Spoken reply.', 'Spoken reply.']);
   });
 });
+
+describe('Keyboard', () => {
+  it('opens the voice-command help with ?', () => {
+    render(<App />);
+    const dialog = document.querySelector('dialog.help') as HTMLDialogElement;
+    dialog.showModal ??= function (this: HTMLDialogElement) {
+      this.setAttribute('open', '');
+    };
+    fireEvent.keyDown(window, { key: '?' });
+    expect(dialog.hasAttribute('open')).toBe(true);
+  });
+
+  it('ignores shortcuts pressed with a modifier', () => {
+    render(<App />);
+    fireEvent.keyDown(window, { key: 'r', ctrlKey: true });
+    expect(document.querySelectorAll('.raw-strip')).toHaveLength(0);
+  });
+
+  it('moves focus to the next exhibit so keyboard users keep their place', () => {
+    render(<App />);
+    const museum = document.getElementById('museum')!;
+    fireEvent.click(within(museum).getAllByRole('button', { name: /^[AB]/ })[0]!);
+    fireEvent.click(within(museum).getByRole('button', { name: /next exhibit/i }));
+    expect(document.activeElement?.textContent).toBe(SCENES[1]!.title);
+  });
+
+  it('says the mic is blocked instead of failing silently', async () => {
+    vi.stubGlobal('navigator', { ...navigator, mediaDevices: { getUserMedia: () => Promise.reject(new Error('denied')) } });
+    render(<App />);
+    await act(async () => {
+      fireEvent.keyDown(window, { key: 'v' });
+    });
+    expect(screen.getByText(/mic is blocked/i)).toBeTruthy();
+  });
+});
