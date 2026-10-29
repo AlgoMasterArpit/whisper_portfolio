@@ -6,6 +6,28 @@ export function recognitionCtor() {
   return typeof window === 'undefined' ? undefined : (window.SpeechRecognition ?? window.webkitSpeechRecognition);
 }
 
+export function isMobile(userAgent: string): boolean {
+  return /Android|iPhone|iPad|iPod|Mobile/i.test(userAgent);
+}
+
+export function speechErrorMessage(code: string): string | null {
+  switch (code) {
+    case 'no-speech':
+      return 'Didn’t catch that — tap and speak again.';
+    case 'aborted':
+      return null;
+    case 'not-allowed':
+    case 'service-not-allowed':
+      return 'Mic is blocked — allow it in the browser, or just type.';
+    case 'audio-capture':
+      return 'Another app is using the mic — close it and try again.';
+    case 'network':
+      return 'Voice needs internet for speech-to-text — typing works offline.';
+    default:
+      return 'Voice hiccup — try again, or type your question.';
+  }
+}
+
 export function useVoice(onFinal: (text: string, mode: VoiceMode) => void) {
   const [listening, setListening] = useState<VoiceMode | null>(null);
   const [interim, setInterim] = useState('');
@@ -32,31 +54,35 @@ export function useVoice(onFinal: (text: string, mode: VoiceMode) => void) {
       stop();
       setError(null);
 
-      let stream: MediaStream;
-      try {
-        stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      } catch {
-        setError('Mic is blocked — typing works too.');
-        return;
+      const Ctor = recognitionCtor();
+      // Android/iOS give the mic to one recorder at a time; the speech service must get it, so skip the waveform tap.
+      const mobile = isMobile(navigator.userAgent);
+      let stream: MediaStream | null = null;
+      let ctx: AudioContext | null = null;
+
+      if (!Ctor || !mobile) {
+        try {
+          stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        } catch {
+          setError(speechErrorMessage('not-allowed'));
+          return;
+        }
+        ctx = new AudioContext();
+        const node = ctx.createAnalyser();
+        node.fftSize = 256;
+        node.smoothingTimeConstant = 0.78;
+        ctx.createMediaStreamSource(stream).connect(node);
+        analyser.current = node;
       }
 
-      const ctx = new AudioContext();
-      const node = ctx.createAnalyser();
-      node.fftSize = 256;
-      node.smoothingTimeConstant = 0.78;
-      ctx.createMediaStreamSource(stream).connect(node);
-      analyser.current = node;
-
-      const Ctor = recognitionCtor();
       const rec = Ctor ? new Ctor() : null;
-
       teardown.current = () => {
         if (rec) {
           rec.onend = null;
           rec.abort();
         }
-        stream.getTracks().forEach((t) => t.stop());
-        void ctx.close();
+        stream?.getTracks().forEach((t) => t.stop());
+        void ctx?.close();
       };
       setListening(mode);
 
@@ -64,8 +90,9 @@ export function useVoice(onFinal: (text: string, mode: VoiceMode) => void) {
         setError('Voice commands need Chrome or Edge — the waveform still hears you.');
         return;
       }
+      const continuous = mode === 'command' && !mobile;
       rec.lang = 'en-IN';
-      rec.continuous = mode === 'command';
+      rec.continuous = continuous;
       rec.interimResults = true;
       rec.onresult = (event) => {
         let pending = '';
@@ -78,11 +105,14 @@ export function useVoice(onFinal: (text: string, mode: VoiceMode) => void) {
         setInterim(pending);
       };
       rec.onerror = (event) => {
-        if (event.error === 'not-allowed') setError('Mic is blocked — typing works too.');
+        const message = speechErrorMessage(event.error);
+        if (!message) return;
+        setError(message);
+        if (event.error !== 'no-speech') stop();
       };
       rec.onend = () => {
-        if (mode === 'dictate') stop();
-        else rec.start();
+        if (continuous) rec.start();
+        else stop();
       };
       rec.start();
     },
