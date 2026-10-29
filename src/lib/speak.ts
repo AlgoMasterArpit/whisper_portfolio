@@ -6,15 +6,27 @@ export interface VoiceLike {
   localService?: boolean;
 }
 
-const PREFERRED_LANGS = ['en-IN', 'hi-IN', 'en-GB', 'en-US'];
+const NATURAL = /natural|neural|online|premium|enhanced|google|siri/i;
+const LANG_SCORE: Record<string, number> = { 'en-in': 4, 'en-gb': 2, 'en-us': 2, 'hi-in': 1 };
+
+export function voiceScore(voice: VoiceLike): number {
+  const lang = voice.lang.replace('_', '-').toLowerCase();
+  const langScore = LANG_SCORE[lang] ?? (lang.startsWith('en') ? 1.5 : 0);
+  if (!langScore) return 0;
+  return langScore + (NATURAL.test(voice.name) ? 10 : 0);
+}
 
 export function pickVoice<V extends VoiceLike>(voices: readonly V[]): V | undefined {
-  const norm = (lang: string) => lang.replace('_', '-').toLowerCase();
-  for (const lang of PREFERRED_LANGS.map((l) => l.toLowerCase())) {
-    const matches = voices.filter((v) => norm(v.lang) === lang);
-    if (matches.length) return matches.find((v) => v.localService) ?? matches[0];
+  let best: V | undefined;
+  let bestScore = 0;
+  for (const voice of voices) {
+    const score = voiceScore(voice);
+    if (score > bestScore) {
+      best = voice;
+      bestScore = score;
+    }
   }
-  return voices.find((v) => norm(v.lang).startsWith('en'));
+  return best;
 }
 
 export function canSpeak(): boolean {
