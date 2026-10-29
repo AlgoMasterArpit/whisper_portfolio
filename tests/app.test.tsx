@@ -2,6 +2,7 @@
 import { act, cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 import { App } from '../src/App';
+import { AskArpit } from '../src/components/AskArpit';
 import { DailyInstalls } from '../src/components/GrowthLab';
 import { SCENES } from '../src/data/story';
 
@@ -188,5 +189,36 @@ describe('Troy voice', () => {
     });
     await waitFor(() => expect(played).toEqual(['blob:troy']));
     expect(browserSpoke).toEqual([]);
+  });
+});
+
+describe('Voice in, voice out', () => {
+  it('speaks the answer to a spoken question even with read-aloud off', async () => {
+    const spoken: string[] = [];
+    vi.stubGlobal('speechSynthesis', {
+      cancel() {},
+      getVoices: () => [{ lang: 'en-IN', name: 'Natural' }],
+      speak: (u: { text: string }) => spoken.push(u.text),
+    });
+    vi.stubGlobal('SpeechSynthesisUtterance', class {
+      constructor(public text: string) {}
+    });
+    vi.stubGlobal('fetch', vi.fn(async () => new Response('{}', { status: 503 })));
+    const entries = [{ id: 1, question: 'rate me', voice: true, answer: { text: 'Seven out of ten.', receipts: [], verdict: 'self-reported' as const, source: 'twin' as const } }];
+    render(
+      <AskArpit entries={entries} busy={false} onAsk={() => {}} dictating={false} interim="" onDictate={() => {}} onStopDictate={() => {}} speakOn={false} onSpeak={() => {}} />,
+    );
+    await waitFor(() => expect(spoken).toEqual(['Seven out of ten.']));
+  });
+
+  it('stays quiet for typed questions while read-aloud is off', async () => {
+    const spoken: string[] = [];
+    vi.stubGlobal('speechSynthesis', { cancel() {}, getVoices: () => [], speak: (u: { text: string }) => spoken.push(u.text) });
+    const entries = [{ id: 1, question: 'typed', answer: { text: 'Quiet.', receipts: [], verdict: 'no-receipt' as const, source: 'twin' as const } }];
+    render(
+      <AskArpit entries={entries} busy={false} onAsk={() => {}} dictating={false} interim="" onDictate={() => {}} onStopDictate={() => {}} speakOn={false} onSpeak={() => {}} />,
+    );
+    await new Promise((r) => setTimeout(r, 50));
+    expect(spoken).toEqual([]);
   });
 });
