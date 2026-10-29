@@ -33,7 +33,7 @@ export function AskArpit({ entries, busy, onAsk, dictating, interim, onDictate, 
   useEffect(() => {
     if (!speakOn || !latest?.answer || latest.id <= spoken.current) return;
     spoken.current = latest.id;
-    speak(latest.answer.text);
+    void speak(latest.answer.text);
   }, [speakOn, latest]);
 
   const submit = (event: FormEvent) => {
@@ -140,7 +140,7 @@ function AnswerReceipt({ entry, voiceOut }: { entry: Entry; voiceOut: boolean })
             <span>
               {answer.source === 'twin' ? 'AI twin · from my words' : 'Offline · my own answers'}
               {voiceOut && (
-                <button type="button" className="answer__play" onClick={() => speak(answer.text)}>
+                <button type="button" className="answer__play" onClick={() => void speak(answer.text)}>
                   ▶ Read aloud
                 </button>
               )}
