@@ -7,3 +7,5 @@ coverage
 .playwright-mcp
 content/talking-points.md
 *.log
+test-results
+playwright-report
