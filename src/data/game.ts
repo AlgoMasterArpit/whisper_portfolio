@@ -21,20 +21,20 @@ export const ROUNDS: readonly Round[] = [
   {
     claims: [
       { text: 'Fixed a silent 25-record cap in Appwrite', receipt: 'seniorsays' },
-      { text: 'Scored the 99th percentile after a second drop', receipt: 'jee' },
-      { text: 'Got recommended at my SSB' },
+      { text: '“Kin asks before it worries” — unlogged doses aren’t “missed”', receipt: 'kin' },
+      { text: 'Deployed Legal Sarthi on Kubernetes' },
       { text: 'Debounced slug checks at 300 ms', receipt: 'seniorsays-live' },
     ],
-    why: 'I sat several SSBs and was never recommended. That is exhibit one in the museum.',
+    why: 'Legal Sarthi runs in Docker on AWS EC2 — no Kubernetes. No receipt, no claim.',
   },
   {
     claims: [
       { text: 'Solved 600+ DSA problems', receipt: 'codolio' },
       { text: 'Shipped an Alexa+ MCP server for a hackathon', receipt: 'kin' },
-      { text: 'Brought speakers and judges to Electrothon', receipt: 'electrothon-7' },
+      { text: 'Helped run Electrothon 7.0 with the SPEC team', receipt: 'electrothon-7' },
       { text: 'Speak fluent German' },
     ],
-    why: 'Hindi and English only. A foreign language is a summer-holiday plan.',
+    why: 'Hindi and English only. No receipt for German.',
   },
 ];
 
