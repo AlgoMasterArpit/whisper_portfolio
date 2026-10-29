@@ -301,3 +301,118 @@ describe('Asking scrolls to the answer', () => {
     expect(scrolled.some((el) => el.id === 'ask')).toBe(false);
   });
 });
+
+describe('Talking to the twin like a walkie-talkie', () => {
+  class Rec {
+    static last: Rec;
+    lang = '';
+    continuous = false;
+    interimResults = false;
+    started = 0;
+    onresult: ((e: unknown) => void) | null = null;
+    onerror: ((e: { error: string }) => void) | null = null;
+    onend: (() => void) | null = null;
+    constructor() {
+      Rec.last = this;
+    }
+    start() {
+      this.started++;
+    }
+    stop() {}
+    abort() {
+      queueMicrotask(() => this.onend?.());
+    }
+    say(text: string) {
+      this.onresult?.({ resultIndex: 0, results: { length: 1, 0: { isFinal: true, length: 1, 0: { transcript: text } } } });
+    }
+  }
+
+  function stubVoice() {
+    const audios: { onended: (() => void) | null; paused: boolean }[] = [];
+    vi.stubGlobal('navigator', {
+      ...navigator,
+      userAgent: 'Mozilla/5.0 (Windows NT 10.0) Chrome/130',
+      mediaDevices: { getUserMedia: async () => ({ getTracks: () => [] }) },
+    });
+    vi.stubGlobal('webkitSpeechRecognition', Rec);
+    vi.stubGlobal(
+      'AudioContext',
+      class {
+        createAnalyser() {
+          return { frequencyBinCount: 8, getByteFrequencyData() {} };
+        }
+        createMediaStreamSource() {
+          return { connect() {} };
+        }
+        close() {
+          return Promise.resolve();
+        }
+      },
+    );
+    vi.stubGlobal('speechSynthesis', { cancel() {}, getVoices: () => [], speak() {} });
+    vi.stubGlobal('SpeechSynthesisUtterance', class {});
+    vi.stubGlobal(
+      'Audio',
+      class {
+        onended: (() => void) | null = null;
+        paused = false;
+        constructor() {
+          audios.push(this);
+        }
+        play() {
+          return Promise.resolve();
+        }
+        pause() {
+          this.paused = true;
+        }
+      },
+    );
+    vi.stubGlobal('URL', Object.assign(Object.create(URL), { createObjectURL: () => 'blob:troy' }));
+    const asked: string[] = [];
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async (url: string, init?: RequestInit) => {
+        if (url === '/api/speak') return new Response(new Uint8Array([1]), { headers: { 'content-type': 'audio/wav' } });
+        if (url !== '/api/ask') return Response.json({ configured: false, days: [] });
+        const question = JSON.parse((init?.body as string) ?? '{}').question;
+        asked.push(question);
+        return Response.json({ text: `Answer to ${question}`, receipts: [], verdict: 'no-receipt', source: 'twin' });
+      }),
+    );
+    return { audios, asked };
+  }
+
+  it('never hears its own answer and opens the mic again once Troy finishes', async () => {
+    const { audios, asked } = stubVoice();
+    render(<App />);
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: /talk to this page/i }));
+    });
+    const rec = Rec.last;
+    await act(async () => rec.say('tell me about your internship experience'));
+    await waitFor(() => expect(audios).toHaveLength(1));
+    expect(screen.getByRole('button', { name: /speaking — tap to stop/i })).toBeTruthy();
+
+    await act(async () => rec.say('Answer to tell me about your internship experience'));
+    expect(asked).toEqual(['tell me about your internship experience']);
+
+    const startsBefore = rec.started;
+    await act(async () => audios[0]!.onended?.());
+    await waitFor(() => expect(rec.started).toBe(startsBefore + 1));
+    await act(async () => rec.say('what was your biggest mistake'));
+    await waitFor(() => expect(asked).toEqual(['tell me about your internship experience', 'what was your biggest mistake']));
+  });
+
+  it('one tap on the red button turns off both the voice and the mic', async () => {
+    const { audios } = stubVoice();
+    render(<App />);
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: /talk to this page/i }));
+    });
+    await act(async () => Rec.last.say('tell me about nova please'));
+    await waitFor(() => expect(audios).toHaveLength(1));
+    fireEvent.click(screen.getByRole('button', { name: /speaking — tap to stop/i }));
+    expect(audios[0]!.paused).toBe(true);
+    expect(screen.getByRole('button', { name: /talk to this page/i })).toBeTruthy();
+  });
+});
