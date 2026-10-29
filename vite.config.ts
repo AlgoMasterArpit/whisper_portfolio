@@ -6,12 +6,14 @@ function localApi(): Plugin {
   return {
     name: 'local-api',
     configureServer(server) {
-      server.middlewares.use('/api/ask', async (req, res) => {
+      server.middlewares.use(async (req, res, next) => {
+        const route = req.url?.match(/^\/api\/(ask|speak)(?:\?|$)/)?.[1];
+        if (!route) return next();
         const chunks: Buffer[] = [];
         for await (const chunk of req) chunks.push(chunk as Buffer);
-        const { POST } = await server.ssrLoadModule('/api/ask.ts');
+        const { POST } = await server.ssrLoadModule(`/api/${route}.ts`);
         const response: Response = await POST(
-          new Request('http://localhost/api/ask', {
+          new Request(`http://localhost/api/${route}`, {
             method: req.method,
             headers: req.headers as Record<string, string>,
             body: req.method === 'POST' ? Buffer.concat(chunks) : undefined,
@@ -19,14 +21,14 @@ function localApi(): Plugin {
         );
         res.statusCode = response.status;
         response.headers.forEach((value, key) => res.setHeader(key, value));
-        res.end(await response.text());
+        res.end(Buffer.from(await response.arrayBuffer()));
       });
     },
   };
 }
 
 export default defineConfig(({ mode }) => {
-  Object.assign(process.env, loadEnv(mode, process.cwd(), 'LLM_'));
+  Object.assign(process.env, loadEnv(mode, process.cwd(), ['LLM_', 'TTS_']));
   return {
     plugins: [react(), localApi()],
     test: {
