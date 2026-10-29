@@ -3,7 +3,7 @@ import { act, cleanup, fireEvent, render, screen, waitFor, within } from '@testi
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 import { App } from '../src/App';
 import { AskArpit } from '../src/components/AskArpit';
-import { DailyInstalls } from '../src/components/GrowthLab';
+import { DailyVisitors } from '../src/components/GrowthLab';
 import { SCENES } from '../src/data/story';
 
 beforeAll(() => {
@@ -79,16 +79,34 @@ describe('Spot the fake', () => {
   });
 });
 
-describe('DailyInstalls', () => {
+describe('DailyVisitors', () => {
   it('draws one bar per day and offers a table view', () => {
     const days = [
-      { date: '2026-10-30', reach: 100, installs: 4 },
-      { date: '2026-10-31', reach: 150, installs: 9, note: 'reel went out' },
+      { date: '2026-10-30', visitors: 4, visits: 5, wisprClicks: 1, channels: {} },
+      { date: '2026-10-31', visitors: 9, visits: 12, wisprClicks: 3, channels: { linkedin: 9 } },
     ];
-    const { container } = render(<DailyInstalls days={days} />);
+    const { container } = render(<DailyVisitors days={days} />);
     expect(container.querySelectorAll('.chart__bar')).toHaveLength(2);
     expect(container.querySelectorAll('tbody tr')).toHaveLength(2);
-    expect(screen.getByText('reel went out')).toBeTruthy();
+    expect(container.querySelector('tbody tr:last-child')?.textContent).toContain('12');
+  });
+});
+
+describe('Growth lab live numbers', () => {
+  it('shows the counted visitors and clicks, not typed numbers', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async (url: string) =>
+        url === '/api/stats'
+          ? Response.json({ configured: true, days: [{ date: '2026-10-30', visitors: 40, visits: 52, wisprClicks: 6, channels: { linkedin: 30, whatsapp: 22 } }] })
+          : new Response(null, { status: 204 }),
+      ),
+    );
+    render(<App />);
+    const growth = document.getElementById('growth')!;
+    await waitFor(() => expect([...growth.querySelectorAll('.tile__value')].map((t) => t.textContent)).toEqual(['40', '6', '15.0%']));
+    expect(within(growth).getByRole('link', { name: /try wispr flow/i }).getAttribute('href')).toBe('/api/go?to=wispr');
+    expect(within(growth).getByRole('link', { name: /raw numbers/i }).getAttribute('href')).toBe('/api/stats');
   });
 });
 
