@@ -89,3 +89,28 @@ describe('DailyInstalls', () => {
     expect(screen.getByText('reel went out')).toBeTruthy();
   });
 });
+
+describe('Spoken answers', () => {
+  it('reads the new answer aloud once the switch is on', async () => {
+    const spoken: string[] = [];
+    vi.stubGlobal('speechSynthesis', { cancel() {}, getVoices: () => [], speak: (u: { text: string }) => spoken.push(u.text) });
+    vi.stubGlobal(
+      'SpeechSynthesisUtterance',
+      class {
+        constructor(public text: string) {}
+      },
+    );
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => Response.json({ text: 'Spoken reply.', receipts: [], verdict: 'no-receipt', source: 'twin' })),
+    );
+    render(<App />);
+    fireEvent.click(screen.getByRole('button', { name: /read answers aloud/i }));
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'What would you do on day one?' }));
+    });
+    expect(spoken).toEqual(['Spoken reply.']);
+    fireEvent.click(screen.getByRole('button', { name: /▶ read aloud/i }));
+    expect(spoken).toEqual(['Spoken reply.', 'Spoken reply.']);
+  });
+});
