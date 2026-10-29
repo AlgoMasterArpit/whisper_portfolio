@@ -5,6 +5,7 @@ import { App } from '../src/App';
 import { AskArpit } from '../src/components/AskArpit';
 import { DailyVisitors } from '../src/components/GrowthLab';
 import { SCENES } from '../src/data/story';
+import { stopSpeaking } from '../src/lib/speak';
 
 beforeAll(() => {
   HTMLCanvasElement.prototype.getContext = () => null;
@@ -13,6 +14,7 @@ beforeAll(() => {
 
 afterEach(() => {
   cleanup();
+  stopSpeaking();
   vi.unstubAllGlobals();
   localStorage.clear();
 });
@@ -224,7 +226,7 @@ describe('Voice in, voice out', () => {
     vi.stubGlobal('fetch', vi.fn(async () => new Response('{}', { status: 503 })));
     const entries = [{ id: 1, question: 'rate me', voice: true, answer: { text: 'Seven out of ten.', receipts: [], verdict: 'self-reported' as const, source: 'twin' as const } }];
     render(
-      <AskArpit entries={entries} busy={false} onAsk={() => {}} dictating={false} interim="" onDictate={() => {}} onStopDictate={() => {}} speakOn={false} onSpeak={() => {}} />,
+      <AskArpit entries={entries} busy={false} onAsk={() => {}} dictating={false} interim="" onDictate={() => {}} onStopDictate={() => {}} speaking={false} onStopSpeaking={() => {}} speakOn={false} onSpeak={() => {}} />,
     );
     await waitFor(() => expect(spoken).toEqual(['Seven out of ten.']));
   });
@@ -234,9 +236,68 @@ describe('Voice in, voice out', () => {
     vi.stubGlobal('speechSynthesis', { cancel() {}, getVoices: () => [], speak: (u: { text: string }) => spoken.push(u.text) });
     const entries = [{ id: 1, question: 'typed', answer: { text: 'Quiet.', receipts: [], verdict: 'no-receipt' as const, source: 'twin' as const } }];
     render(
-      <AskArpit entries={entries} busy={false} onAsk={() => {}} dictating={false} interim="" onDictate={() => {}} onStopDictate={() => {}} speakOn={false} onSpeak={() => {}} />,
+      <AskArpit entries={entries} busy={false} onAsk={() => {}} dictating={false} interim="" onDictate={() => {}} onStopDictate={() => {}} speaking={false} onStopSpeaking={() => {}} speakOn={false} onSpeak={() => {}} />,
     );
     await new Promise((r) => setTimeout(r, 50));
     expect(spoken).toEqual([]);
+  });
+});
+
+describe('Stopping the voice on a phone', () => {
+  it('turns the talk button into a stop button while Troy speaks, and one tap silences him', async () => {
+    let paused = 0;
+    vi.stubGlobal('speechSynthesis', { cancel() {}, getVoices: () => [], speak() {} });
+    vi.stubGlobal('SpeechSynthesisUtterance', class {});
+    vi.stubGlobal(
+      'Audio',
+      class {
+        onended: (() => void) | null = null;
+        constructor(public src: string) {}
+        play() {
+          return Promise.resolve();
+        }
+        pause() {
+          paused++;
+        }
+      },
+    );
+    vi.stubGlobal('URL', Object.assign(Object.create(URL), { createObjectURL: () => 'blob:troy' }));
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async (url: string) =>
+        url === '/api/speak'
+          ? new Response(new Uint8Array([1]), { headers: { 'content-type': 'audio/wav' } })
+          : Response.json({ text: 'Seven out of ten.', receipts: [], verdict: 'self-reported', source: 'twin' }),
+      ),
+    );
+    render(<App />);
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'What would you do on day one?' }));
+    });
+    await act(async () => {
+      fireEvent.click(await screen.findByRole('button', { name: /▶ read aloud/i }));
+    });
+    const talk = await screen.findByRole('button', { name: /speaking — tap to stop/i });
+    fireEvent.click(talk);
+    expect(paused).toBe(1);
+    expect(screen.getByRole('button', { name: /talk to this page/i })).toBeTruthy();
+  });
+});
+
+describe('Asking scrolls to the answer', () => {
+  it('brings the printed receipt into view instead of the ask heading', async () => {
+    const scrolled: Element[] = [];
+    const original = Element.prototype.scrollIntoView;
+    Element.prototype.scrollIntoView = function (this: Element) {
+      scrolled.push(this);
+    };
+    vi.stubGlobal('fetch', vi.fn(async () => Response.json({ text: 'Hi.', receipts: [], verdict: 'no-receipt', source: 'twin' })));
+    render(<App />);
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'What would you do on day one?' }));
+    });
+    Element.prototype.scrollIntoView = original;
+    expect(scrolled.some((el) => el.classList.contains('printer'))).toBe(true);
+    expect(scrolled.some((el) => el.id === 'ask')).toBe(false);
   });
 });
