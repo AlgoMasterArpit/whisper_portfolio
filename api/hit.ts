@@ -21,11 +21,13 @@ export async function POST(request: Request): Promise<Response> {
   const visitor = await visitorHash(ip, userAgent!, day, salt);
   const channel = channelOf(body.ref, body.referrer);
 
-  await pipeline(redisEnv(process.env), [
-    ['SADD', 'days', day],
-    ['INCR', `visits:${day}`],
-    ['PFADD', `visitors:${day}`, visitor],
-    ['HINCRBY', `channels:${day}`, channel, 1],
-  ]);
+  const env = redisEnv(process.env);
+  const [, , isNew] =
+    (await pipeline(env, [
+      ['SADD', 'days', day],
+      ['INCR', `visits:${day}`],
+      ['PFADD', `visitors:${day}`, visitor],
+    ])) ?? [];
+  if (isNew === 1) await pipeline(env, [['HINCRBY', `channels:${day}`, channel, 1]]);
   return new Response(null, { status: 204 });
 }
