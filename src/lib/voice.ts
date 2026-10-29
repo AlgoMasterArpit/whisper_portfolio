@@ -36,6 +36,10 @@ export function useVoice(onFinal: (text: string, mode: VoiceMode) => void) {
   const buffer = useRef<Uint8Array<ArrayBuffer> | null>(null);
   const teardown = useRef<(() => void) | null>(null);
   const onFinalRef = useRef(onFinal);
+  const recognizer = useRef<SpeechRecognition | null>(null);
+  const running = useRef(false);
+  const held = useRef(false);
+  const [paused, setPaused] = useState(false);
 
   useEffect(() => {
     onFinalRef.current = onFinal;
@@ -45,9 +49,38 @@ export function useVoice(onFinal: (text: string, mode: VoiceMode) => void) {
     teardown.current?.();
     teardown.current = null;
     analyser.current = null;
+    recognizer.current = null;
+    running.current = false;
+    held.current = false;
+    setPaused(false);
     setListening(null);
     setInterim('');
   }, []);
+
+  const listen = useCallback(() => {
+    const rec = recognizer.current;
+    if (!rec || running.current) return;
+    try {
+      rec.start();
+      running.current = true;
+    } catch {
+      /* already listening */
+    }
+  }, []);
+
+  const hold = useCallback(() => {
+    held.current = true;
+    setPaused(true);
+    setInterim('');
+    if (running.current) recognizer.current?.abort();
+  }, []);
+
+  const release = useCallback(() => {
+    if (!held.current) return;
+    held.current = false;
+    setPaused(false);
+    listen();
+  }, [listen]);
 
   const start = useCallback(
     async (mode: VoiceMode) => {
@@ -76,6 +109,9 @@ export function useVoice(onFinal: (text: string, mode: VoiceMode) => void) {
       }
 
       const rec = Ctor ? new Ctor() : null;
+      recognizer.current = rec;
+      held.current = false;
+      setPaused(false);
       teardown.current = () => {
         if (rec) {
           rec.onend = null;
@@ -95,12 +131,18 @@ export function useVoice(onFinal: (text: string, mode: VoiceMode) => void) {
       rec.continuous = continuous;
       rec.interimResults = true;
       rec.onresult = (event) => {
+        if (held.current) return;
         let pending = '';
         for (let i = event.resultIndex; i < event.results.length; i++) {
           const result = event.results[i]!;
           const text = result[0]?.transcript ?? '';
-          if (result.isFinal) onFinalRef.current(text.trim(), mode);
-          else pending += text;
+          if (!result.isFinal) pending += text;
+          else if (text.trim()) {
+            // stop hearing anything — including the twin's own answer — until the page releases the mic
+            if (mode === 'command') hold();
+            onFinalRef.current(text.trim(), mode);
+            return;
+          }
         }
         setInterim(pending);
       };
@@ -111,12 +153,14 @@ export function useVoice(onFinal: (text: string, mode: VoiceMode) => void) {
         if (event.error !== 'no-speech') stop();
       };
       rec.onend = () => {
-        if (continuous) rec.start();
+        running.current = false;
+        if (held.current) return;
+        if (continuous) listen();
         else stop();
       };
-      rec.start();
+      listen();
     },
-    [stop],
+    [hold, listen, stop],
   );
 
   const readSpectrum = useCallback((): Uint8Array | null => {
@@ -129,5 +173,5 @@ export function useVoice(onFinal: (text: string, mode: VoiceMode) => void) {
 
   useEffect(() => stop, [stop]);
 
-  return { listening, interim, error, start, stop, readSpectrum };
+  return { listening, interim, error, paused, start, stop, hold, release, readSpectrum };
 }
