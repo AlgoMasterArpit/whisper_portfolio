@@ -29,8 +29,34 @@ export function pickVoice<V extends VoiceLike>(voices: readonly V[]): V | undefi
   return best;
 }
 
-export function canSpeak(): boolean {
+function browserVoice(): boolean {
   return typeof window !== 'undefined' && 'speechSynthesis' in window && typeof SpeechSynthesisUtterance !== 'undefined';
+}
+
+export function canSpeak(): boolean {
+  return browserVoice() || typeof Audio !== 'undefined';
+}
+
+let turn = 0;
+let playing: HTMLAudioElement | null = null;
+const clips = new Map<string, string>();
+
+async function twinClip(text: string): Promise<string | null> {
+  const hit = clips.get(text);
+  if (hit) return hit;
+  try {
+    const res = await fetch('/api/speak', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ text }),
+    });
+    if (!res.ok || !res.headers.get('content-type')?.startsWith('audio/')) return null;
+    const url = URL.createObjectURL(await res.blob());
+    clips.set(text, url);
+    return url;
+  } catch {
+    return null;
+  }
 }
 
 export function loadVoices(timeoutMs = 1000): Promise<SpeechSynthesisVoice[]> {
@@ -47,11 +73,11 @@ export function loadVoices(timeoutMs = 1000): Promise<SpeechSynthesisVoice[]> {
   });
 }
 
-export async function speak(text: string): Promise<void> {
-  if (!canSpeak()) return;
-  window.speechSynthesis.cancel();
+async function speakInBrowser(text: string, mine: number): Promise<void> {
+  if (!browserVoice()) return;
   const utterance = new SpeechSynthesisUtterance(text);
   const voice = pickVoice(await loadVoices());
+  if (mine !== turn) return;
   if (voice) {
     utterance.voice = voice;
     utterance.lang = voice.lang;
@@ -60,8 +86,29 @@ export async function speak(text: string): Promise<void> {
   window.speechSynthesis.speak(utterance);
 }
 
+export async function speak(text: string): Promise<void> {
+  stopSpeaking();
+  const mine = turn;
+  const url = typeof Audio === 'undefined' ? null : await twinClip(text);
+  if (mine !== turn) return;
+  if (url) {
+    const audio = new Audio(url);
+    playing = audio;
+    try {
+      await audio.play();
+      return;
+    } catch {
+      playing = null;
+    }
+  }
+  await speakInBrowser(text, mine);
+}
+
 export function stopSpeaking(): void {
-  if (canSpeak()) window.speechSynthesis.cancel();
+  turn++;
+  playing?.pause();
+  playing = null;
+  if (browserVoice()) window.speechSynthesis.cancel();
 }
 
 const KEY = 'receipts:speak';
