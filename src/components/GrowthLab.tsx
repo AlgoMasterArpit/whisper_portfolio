@@ -1,6 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { resolveReceipts } from '../../shared/receipts';
-import { CAMPAIGN, dayNumber, totals, type CampaignDay } from '../data/campaign';
+import { totalsOf, type Channel, type DayStats } from '../../shared/stats';
+import { CAMPAIGN } from '../data/campaign';
+import { loadStats, type LiveStats } from '../lib/track';
 import { RawStrip } from './RawStrip';
 import { ProofList } from './Receipt';
 
@@ -25,12 +27,38 @@ const EVIDENCE = [
   },
 ] as const;
 
+const CHANNEL_LABEL: Record<Channel, string> = {
+  linkedin: 'LinkedIn',
+  whatsapp: 'WhatsApp',
+  instagram: 'Instagram',
+  x: 'X',
+  college: 'College groups',
+  github: 'GitHub',
+  direct: 'Direct',
+  other: 'Other',
+};
+
+const COUNTER_SOURCE = 'https://github.com/AlgoMasterArpit/whisper_portfolio/blob/main/api/hit.ts';
+
 const percent = (n: number) => `${(n * 100).toFixed(1)}%`;
 
 export function GrowthLab() {
-  const day = dayNumber(CAMPAIGN.startsOn, new Date());
-  const sum = totals(CAMPAIGN.days);
-  const launched = CAMPAIGN.days.length > 0;
+  const [stats, setStats] = useState<LiveStats | null>(null);
+
+  useEffect(() => {
+    let alive = true;
+    void loadStats().then((s) => {
+      if (alive) setStats(s);
+    });
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  const days = stats?.days ?? [];
+  const sum = totalsOf(days);
+  const live = days.length > 0;
+  const channels = (Object.entries(sum.channels) as [Channel, number][]).sort((a, b) => b[1] - a[1]);
 
   return (
     <section id="growth" className="section growth">
@@ -69,7 +97,7 @@ export function GrowthLab() {
         <article className="experiment" data-reveal>
           <header className="experiment__head">
             <div>
-              <p className="evidence__label">{launched ? `Live · day ${Math.max(1, day)}` : 'Pre-launch'}</p>
+              <p className="evidence__label">{live ? `Live · ${days.length} day${days.length > 1 ? 's' : ''}` : 'Counter is on'}</p>
               <h3>{CAMPAIGN.name}</h3>
             </div>
             <dl className="experiment__meta">
@@ -85,19 +113,43 @@ export function GrowthLab() {
           </header>
 
           <div className="tiles">
-            <Tile label="Reached" value={sum.reach.toLocaleString('en-IN')} />
-            <Tile label="Installed" value={sum.installs.toLocaleString('en-IN')} />
-            <Tile label="Conversion" value={launched ? percent(sum.conversion) : '—'} />
+            <Tile label="Visitors" value={sum.visitors.toLocaleString('en-IN')} />
+            <Tile label="Tried Wispr Flow" value={sum.wisprClicks.toLocaleString('en-IN')} />
+            <Tile label="Click rate" value={live ? percent(sum.clickRate) : '—'} />
           </div>
 
-          {launched ? (
-            <DailyInstalls days={CAMPAIGN.days} />
+          {live ? (
+            <>
+              <DailyVisitors days={days} />
+              {channels.length > 0 && (
+                <p className="channels">
+                  {channels.map(([c, n]) => (
+                    <span key={c}>
+                      {CHANNEL_LABEL[c]} <strong>{n}</strong>
+                    </span>
+                  ))}
+                </p>
+              )}
+            </>
           ) : (
-            <p className="experiment__empty">
-              Launches {new Date(`${CAMPAIGN.startsOn}T00:00:00+05:30`).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}. Real numbers land
-              here every day — including the flops.
-            </p>
+            <p className="experiment__empty">Numbers appear here on their own as people visit — including the flops.</p>
           )}
+
+          <div className="experiment__foot">
+            <a className="btn btn--ink" href="/api/go?to=wispr" target="_blank" rel="noopener">
+              Try Wispr Flow ↗
+            </a>
+            <p className="experiment__proof">
+              Counted live and anonymously by this site — not typed by me.{' '}
+              <a href="/api/stats" target="_blank" rel="noopener">
+                Raw numbers ↗
+              </a>{' '}
+              ·{' '}
+              <a href={COUNTER_SOURCE} target="_blank" rel="noreferrer">
+                Counter code ↗
+              </a>
+            </p>
+          </div>
         </article>
       </div>
     </section>
@@ -117,23 +169,23 @@ const W = 640;
 const H = 200;
 const PAD = { top: 16, right: 8, bottom: 28, left: 32 };
 
-export function DailyInstalls({ days }: { days: readonly CampaignDay[] }) {
+export function DailyVisitors({ days }: { days: readonly DayStats[] }) {
   const [hover, setHover] = useState<number | null>(null);
-  const max = Math.max(1, ...days.map((d) => d.installs));
+  const max = Math.max(1, ...days.map((d) => d.visitors));
   const plotW = W - PAD.left - PAD.right;
   const plotH = H - PAD.top - PAD.bottom;
   const slot = plotW / days.length;
   const barW = Math.min(36, slot - 2);
-  const ticks = [0, Math.ceil(max / 2), max];
+  const ticks = [...new Set([0, Math.ceil(max / 2), max])];
   const active = hover === null ? null : days[hover];
-  const label = (d: CampaignDay) =>
+  const label = (d: DayStats) =>
     new Date(`${d.date}T00:00:00+05:30`).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
 
   return (
     <figure className="chart">
-      <figcaption className="chart__title">Installs per day</figcaption>
+      <figcaption className="chart__title">Visitors per day</figcaption>
       <div className="chart__plot">
-        <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`Installs per day over ${days.length} days, peak ${max}`}>
+        <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`Visitors per day over ${days.length} days, peak ${max}`}>
           {ticks.map((t) => {
             const y = PAD.top + plotH - (t / max) * plotH;
             return (
@@ -146,7 +198,7 @@ export function DailyInstalls({ days }: { days: readonly CampaignDay[] }) {
             );
           })}
           {days.map((d, i) => {
-            const h = (d.installs / max) * plotH;
+            const h = (d.visitors / max) * plotH;
             const x = PAD.left + i * slot + (slot - barW) / 2;
             const y = PAD.top + plotH - h;
             return (
@@ -176,9 +228,8 @@ export function DailyInstalls({ days }: { days: readonly CampaignDay[] }) {
         {active && hover !== null && (
           <div className="chart__tip" style={{ left: `${((PAD.left + (hover + 0.5) * slot) / W) * 100}%` }}>
             <strong>{label(active)}</strong>
-            <span>{active.installs} installs</span>
-            <span>{active.reach} reached</span>
-            {active.note && <em>{active.note}</em>}
+            <span>{active.visitors} visitors</span>
+            <span>{active.wisprClicks} tried Wispr Flow</span>
           </div>
         )}
       </div>
@@ -188,18 +239,18 @@ export function DailyInstalls({ days }: { days: readonly CampaignDay[] }) {
           <thead>
             <tr>
               <th scope="col">Day</th>
-              <th scope="col">Reached</th>
-              <th scope="col">Installed</th>
-              <th scope="col">Note</th>
+              <th scope="col">Visitors</th>
+              <th scope="col">Visits</th>
+              <th scope="col">Tried Wispr</th>
             </tr>
           </thead>
           <tbody>
             {days.map((d) => (
               <tr key={d.date}>
                 <td>{label(d)}</td>
-                <td>{d.reach}</td>
-                <td>{d.installs}</td>
-                <td>{d.note ?? ''}</td>
+                <td>{d.visitors}</td>
+                <td>{d.visits}</td>
+                <td>{d.wisprClicks}</td>
               </tr>
             ))}
           </tbody>
