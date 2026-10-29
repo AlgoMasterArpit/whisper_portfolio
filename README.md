@@ -27,7 +27,7 @@ Turn on **Raw mode** (nav switch or the <kbd>R</kbd> key) and every section show
 - **Voice commands** use the browser's Web Speech API (`en-IN`), so Hinglish works: "museum", "growth lab", "khel", "raw mode on", "animation band karo", "upar". Press <kbd>?</kbd> for the full list and <kbd>V</kbd> to toggle the mic.
 - **Live spectrum:** the Web Audio `AnalyserNode` feeds the hero's canvas ridgeline. There's no audio library, and nothing is recorded or uploaded.
 - Spoken Hindi that comes back in Devanagari works too: "गलतियाँ दिखाओ", "ऊपर जाओ", "पूछो …".
-- **The twin talks back.** Switch on *Read answers aloud* (or say "bolke sunao") and answers are spoken with the browser's speech synthesis, using an Indian English voice when the device has one. Every answer also has a ▶ button.
+- **The twin talks back — in Troy's voice.** Switch on *Read answers aloud* (or say "bolke sunao") and answers are spoken by Orpheus (`canopylabs/orpheus-v1-english`, voice *troy*) through `/api/speak`. Long answers are split into sentences, generated in parallel and stitched into one WAV, because Orpheus stops after ~18 s per request. Audio is cached on the server and in the browser, and if the free quota runs out the page falls back to the most natural voice the browser has.
 - In browsers without speech recognition (Firefox), the waveform still reacts to your voice and typing works everywhere.
 
 ## How the twin stays honest
@@ -63,6 +63,7 @@ npm run build            # typecheck + production build
 |---|---|---|
 | `LLM_API_KEY` | — | Leave empty to use offline mode |
 | `LLM_BASE_URL` | `https://api.groq.com/openai/v1` | Any OpenAI-compatible endpoint |
+| `TTS_VOICE` | `troy` | Orpheus voice: austin, daniel, troy, autumn, diana, hannah |
 | `LLM_MODEL` | `openai/gpt-oss-120b,openai/gpt-oss-20b,qwen/qwen3.8-27b` | Comma-separated chain; the next model takes over when one hits its rate limit |
 
 **Deploy:** import the repo in Vercel and set the env vars. Vite is detected automatically, and `api/ask.ts` becomes a serverless function.
@@ -71,6 +72,7 @@ npm run build            # typecheck + production build
 
 ```
 api/ask.ts            serverless endpoint (validation, rate limit)
+api/speak.ts          text-to-speech endpoint (Orpheus, chunked, cached)
 shared/               used by both server and browser
   knowledge.ts        facts the twin may use, each tagged with receipt ids
   receipts.ts         the proof catalog + verdict rules
