@@ -235,3 +235,10 @@ describe('parseTwinReply kinds', () => {
     expect(a).toMatchObject({ verdict: 'no-receipt', receipts: [] });
   });
 });
+
+describe('answer text hygiene', () => {
+  it('strips receipt ids the model wrote into the sentence', () => {
+    const a = parseTwinReply('{"kind":"about-me","answerable":true,"answer":"I built N.O.V.A [nova] and Legal Sarthi [legal-sarthi].","receipts":["nova"]}');
+    expect(a?.text).toBe('I built N.O.V.A and Legal Sarthi.');
+  });
+});
