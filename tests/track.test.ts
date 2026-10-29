@@ -3,7 +3,11 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { countVisit, loadStats } from '../src/lib/track';
 
 describe('countVisit', () => {
-  beforeEach(() => sessionStorage.clear());
+  beforeEach(() => {
+    sessionStorage.clear();
+    localStorage.clear();
+    window.history.replaceState(null, '', '/');
+  });
   afterEach(() => vi.unstubAllGlobals());
 
   it('sends one beacon per session with the ref tag and referrer', async () => {
@@ -24,6 +28,25 @@ describe('countVisit', () => {
     vi.stubGlobal('fetch', fetchImpl);
     countVisit();
     expect((fetchImpl.mock.calls[0] as unknown as [string, RequestInit])[1].keepalive).toBe(true);
+  });
+});
+
+describe('owner mode', () => {
+  beforeEach(() => {
+    sessionStorage.clear();
+    localStorage.clear();
+  });
+  afterEach(() => vi.unstubAllGlobals());
+
+  it('never counts my own browser once I have opened ?me', () => {
+    const sendBeacon = vi.fn(() => true);
+    vi.stubGlobal('navigator', { ...navigator, sendBeacon });
+    window.history.replaceState(null, '', '/?me');
+    countVisit();
+    sessionStorage.clear();
+    window.history.replaceState(null, '', '/?ref=linkedin');
+    countVisit();
+    expect(sendBeacon).not.toHaveBeenCalled();
   });
 });
 
