@@ -13,7 +13,8 @@ export interface TwinEnv {
 }
 
 export const DEFAULT_BASE_URL = 'https://api.groq.com/openai/v1';
-export const DEFAULT_MODEL = 'openai/gpt-oss-120b';
+export const FALLBACK_MODELS = ['openai/gpt-oss-120b', 'openai/gpt-oss-20b', 'qwen/qwen3.8-27b'] as const;
+export const DEFAULT_MODEL = FALLBACK_MODELS[0];
 
 export type QuestionResult = { question: string } | { error: string };
 
@@ -62,29 +63,47 @@ export function parseTwinReply(content: string): Answer | null {
   };
 }
 
+export function modelChain(model: string | undefined): string[] {
+  return (model || FALLBACK_MODELS.join(','))
+    .split(',')
+    .map((m) => m.trim())
+    .filter(Boolean);
+}
+
+function reasoningFor(model: string) {
+  if (model.includes('gpt-oss')) return { reasoning_effort: 'low' };
+  if (model.includes('qwen3')) return { reasoning_format: 'hidden' };
+  return {};
+}
+
 export async function askTwin(question: string, env: TwinEnv, fetchImpl: typeof fetch = fetch): Promise<Answer> {
   if (!env.apiKey) return matchOffline(question);
-  const model = env.model || DEFAULT_MODEL;
+  const signal = AbortSignal.timeout(LLM_TIMEOUT_MS);
+  const messages = buildMessages(question);
   try {
-    const res = await fetchImpl(`${env.baseUrl || DEFAULT_BASE_URL}/chat/completions`, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json', authorization: `Bearer ${env.apiKey}` },
-      body: JSON.stringify({
-        model,
-        messages: buildMessages(question),
-        temperature: 0.3,
-        max_tokens: 800,
-        response_format: { type: 'json_object' },
-        ...(model.includes('gpt-oss') && { reasoning_effort: 'low' }),
-      }),
-      signal: AbortSignal.timeout(LLM_TIMEOUT_MS),
-    });
-    if (!res.ok) return matchOffline(question);
-    const data = (await res.json()) as { choices?: { message?: { content?: string } }[] };
-    return parseTwinReply(data.choices?.[0]?.message?.content ?? '') ?? matchOffline(question);
+    for (const model of modelChain(env.model)) {
+      const res = await fetchImpl(`${env.baseUrl || DEFAULT_BASE_URL}/chat/completions`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json', authorization: `Bearer ${env.apiKey}` },
+        body: JSON.stringify({
+          model,
+          messages,
+          temperature: 0.3,
+          max_tokens: 800,
+          response_format: { type: 'json_object' },
+          ...reasoningFor(model),
+        }),
+        signal,
+      });
+      if (res.status === 429 || res.status >= 500) continue;
+      if (!res.ok) break;
+      const data = (await res.json()) as { choices?: { message?: { content?: string } }[] };
+      return parseTwinReply(data.choices?.[0]?.message?.content ?? '') ?? matchOffline(question);
+    }
   } catch {
-    return matchOffline(question);
+    /* timeout or network — fall through to offline */
   }
+  return matchOffline(question);
 }
 
 // ponytail: per-instance memory, so limits reset on cold start; move to Vercel KV if abuse shows up.
