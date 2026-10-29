@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { INTENTS, NO_RECEIPT_ANSWER, UNKNOWN_ANSWER } from '../shared/faq';
-import { matchOffline, normalize, stem } from '../shared/matcher';
+import { matchOffline, normalize, stem, tokenize } from '../shared/matcher';
 import { findReceipt } from '../shared/receipts';
 
 const intentOf = (question: string) => INTENTS.find((i) => i.answer === matchOffline(question).text)?.id;
@@ -122,5 +122,12 @@ describe('stem', () => {
     ['llms', 'llms'],
   ])('%s → %s', (word, stemmed) => {
     expect(stem(word)).toBe(stemmed);
+  });
+});
+
+describe('tokenize', () => {
+  it('maps common Hinglish words onto the English facts', () => {
+    expect(tokenize('Tumne sabse badi galti kya ki?')).toContain('mistake');
+    expect(tokenize('kaam aur padhai')).toEqual(['work', 'college']);
   });
 });

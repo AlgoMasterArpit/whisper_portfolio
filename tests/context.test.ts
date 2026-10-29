@@ -38,3 +38,13 @@ describe('selectContext', () => {
     expect(titlesIn(selectContext('projects mistakes risks growth work record', 2))).toHaveLength(3);
   });
 });
+
+describe('Hinglish questions', () => {
+  it.each([
+    ['Tumne sabse badi galti kya ki?', 'Mistakes'],
+    ['Sabse bada khatra kya liya?', 'Biggest risks'],
+    ['Aapka kaam kya hai?', 'Work'],
+  ])('“%s” pulls in %s', (question, title) => {
+    expect(titlesIn(selectContext(question))).toContain(title);
+  });
+});
