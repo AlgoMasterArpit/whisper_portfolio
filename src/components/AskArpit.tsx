@@ -20,11 +20,25 @@ interface Props {
   interim: string;
   onDictate: () => void;
   onStopDictate: () => void;
+  speaking: boolean;
+  onStopSpeaking: () => void;
   speakOn: boolean;
   onSpeak: (on: boolean) => void;
 }
 
-export function AskArpit({ entries, busy, onAsk, dictating, interim, onDictate, onStopDictate, speakOn, onSpeak }: Props) {
+export function AskArpit({
+  entries,
+  busy,
+  onAsk,
+  dictating,
+  interim,
+  onDictate,
+  onStopDictate,
+  speaking,
+  onStopSpeaking,
+  speakOn,
+  onSpeak,
+}: Props) {
   const [draft, setDraft] = useState('');
   const [voiceOut] = useState(canSpeak);
   const spoken = useRef(0);
@@ -72,9 +86,9 @@ export function AskArpit({ entries, busy, onAsk, dictating, interim, onDictate, 
             />
             <button
               type="button"
-              className={`ask__mic ${dictating ? 'is-live' : ''}`}
-              onClick={dictating ? onStopDictate : onDictate}
-              aria-label={dictating ? 'Stop listening' : 'Ask by voice'}
+              className={`ask__mic ${dictating || speaking ? 'is-live' : ''}`}
+              onClick={dictating ? onStopDictate : speaking ? onStopSpeaking : onDictate}
+              aria-label={dictating ? 'Stop listening' : speaking ? 'Stop the voice' : 'Ask by voice'}
             >
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 1 0-6 0v6a3 3 0 0 0 3 3Zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-2.08A7 7 0 0 0 19 12h-2Z" />
