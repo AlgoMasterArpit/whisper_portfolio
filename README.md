@@ -34,7 +34,8 @@ Turn on **Raw mode** (nav switch or the <kbd>R</kbd> key) and every section show
 
 ```
 question ──► /api/ask ──► LLM (any OpenAI-compatible API, Groq by default)
-                │            │  answers only from shared/knowledge.ts
+                │            │  reads the full resume (shared/resume.ts) + the
+                │            │  relevant spoken facts (shared/knowledge.ts)
                 │            ▼  returns { answer, receipts: [ids] }
                 │      server keeps only receipt ids that exist,
                 │      then computes the verdict itself
@@ -42,6 +43,7 @@ question ──► /api/ask ──► LLM (any OpenAI-compatible API, Groq by de
                 └─ no key / LLM down / bad JSON ──► offline matcher (shared/matcher.ts)
 ```
 
+- One call, three kinds of answer: **about me** (from the resume and my own words — summaries and modest, evidence-based self-ratings allowed, invented facts not), **general** ("What is Carboledger?" → a short explanation from general knowledge, linked to my work, stamped *Explained*), or **not on record** (stamped *No receipt*).
 - The model never decides the stamp. `verdictFor()` does: any public link → **verified**, only self-reported proof → **self-reported**, nothing → **no receipt**.
 - Topics I have no proof for (paid ads, foreign languages and so on) skip the model entirely and return **no receipt**.
 - The question is sent as data, never as instructions. Requests are rate-limited, size-capped and time out after 12 s.
