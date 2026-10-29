@@ -35,11 +35,31 @@ export function stem(word: string): string {
   return word;
 }
 
+const HINGLISH: Record<string, string> = {
+  galti: 'mistake',
+  galtiya: 'mistake',
+  galtiyan: 'mistake',
+  kamzori: 'weakness',
+  padhai: 'college',
+  ghar: 'hometown',
+  parivar: 'family',
+  kaam: 'work',
+  naukri: 'job',
+  sikha: 'learn',
+  seekha: 'learn',
+  khatra: 'risk',
+  jokhim: 'risk',
+  sapna: 'dream',
+  awaaz: 'voice',
+  aawaz: 'voice',
+  bharat: 'india',
+};
+
 export function tokenize(text: string): string[] {
   return normalize(text)
     .split(/[^a-z0-9+]+/)
     .filter((t) => t && !STOP.has(t))
-    .map(stem);
+    .map((t) => stem(HINGLISH[t] ?? t));
 }
 
 function hasPhrase(haystack: string, phrase: string): boolean {
