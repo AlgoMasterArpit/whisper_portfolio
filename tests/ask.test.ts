@@ -198,3 +198,40 @@ describe('createAnswerCache', () => {
     expect(cache.get('c', 1)).toEqual(twin);
   });
 });
+
+describe('resume-aware prompt', () => {
+  it('always carries the full resume, whatever the question', () => {
+    for (const q of ['hmm', 'What is Carboledger?', 'Rate your tech skills']) {
+      expect(buildMessages(q)[0].content).toContain('## Technical skills');
+    }
+  });
+
+  it('stays inside the free-tier token budget (~4k tokens)', () => {
+    for (const q of ['Rate your tech skills', 'What is Carboledger?', 'projects mistakes risks growth work record']) {
+      expect(buildMessages(q)[0].content.length, q).toBeLessThan(16_000);
+    }
+  });
+});
+
+describe('parseTwinReply kinds', () => {
+  it('stamps a general explanation as explained, not as missing proof', () => {
+    const a = parseTwinReply('{"kind":"general","answerable":true,"answer":"FastAPI is a Python web framework.","receipts":[]}');
+    expect(a?.verdict).toBe('general');
+  });
+
+  it('keeps receipts on a general answer that also cites my work', () => {
+    const a = parseTwinReply('{"kind":"general","answerable":true,"answer":"Carboledger automates ISCC bookkeeping; I intern there.","receipts":["carboledger"]}');
+    expect(a?.verdict).toBe('self-reported');
+  });
+
+  it('backs resume-only answers with the resume receipt', () => {
+    const a = parseTwinReply('{"kind":"about-me","answerable":true,"answer":"Strongest in React and FastAPI.","receipts":["resume"]}');
+    expect(a?.receipts.map((r) => r.id)).toEqual(['resume']);
+    expect(a?.verdict).toBe('self-reported');
+  });
+
+  it('drops any receipts the model attached to an unanswerable question', () => {
+    const a = parseTwinReply('{"kind":"about-me","answerable":false,"answer":"Not on record.","receipts":["nova"]}');
+    expect(a).toMatchObject({ verdict: 'no-receipt', receipts: [] });
+  });
+});
