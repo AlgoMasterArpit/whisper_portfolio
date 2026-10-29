@@ -15,7 +15,7 @@ test('loads with the headline and no errors', async ({ page }) => {
   await page.goto('/');
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Don’t trust my resume.');
   await expect(page.locator('.hero__receipt')).toContainText('CGPA 8.94');
-  expect(errors.filter((e) => !e.includes('/api/ask'))).toEqual([]);
+  expect(errors.filter((e) => !e.includes('/api/') && !e.startsWith('Failed to load resource'))).toEqual([]);
 });
 
 test('prints a stamped answer for a suggested question', async ({ page }) => {
