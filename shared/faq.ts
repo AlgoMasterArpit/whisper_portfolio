@@ -31,7 +31,7 @@ export const INTENTS: readonly Intent[] = [
     id: 'electrothon',
     keywords: ['electrothon', 'spec', 'devrel', 'developer relations', 'hackathon organis', 'speakers', 'judges', 'community'],
     answer:
-      'As Developer Relations Lead at SPEC I brought speakers and judges to Electrothon 7.0 and 8.0 and grew the brand nationally. I also built the real-time infra dashboard for Electrothon 8.0 — 500+ participants used it — and trained a 27-member team on DSA and full-stack.',
+      'As Developer Relations Lead I was part of the SPEC team that brought speakers and judges to Electrothon 7.0 and 8.0 and grew its brand nationally — a team effort. I also built the real-time infra dashboard for Electrothon 8.0 — 500+ participants used it — and trained a 27-member team on DSA and full-stack.',
     receipts: ['electrothon-8', 'electrothon-7', 'electrothon-8-repo', 'spec'],
   },
   {
@@ -71,24 +71,17 @@ export const INTENTS: readonly Intent[] = [
   },
   {
     id: 'risk',
-    keywords: ['risk', 'biggest risk', 'bold', 'gamble', 'drop', 'jee', 'percentile', 'sabse bada risk'],
+    keywords: ['risk', 'biggest risk', 'bold', 'gamble', 'sabse bada risk'],
     answer:
-      'After my NDA year, SSB attempts were over. Private B.Tech or a second drop for JEE? I took the second drop — a whole year on the line — and it paid off: 99th percentile and NIT Hamirpur.',
-    receipts: ['jee', 'ssb'],
+      'Going all-in on software as an ECE student while keeping my CGPA. And in October 2026, running four overlapping hackathons alongside my internship and classes — Kin for Amazon, MeterMind for Build With AI and OpenCV.',
+    receipts: ['cgpa', 'kin', 'metermind'],
   },
   {
     id: 'mistakes',
     keywords: ['mistake', 'failure', 'failed', 'regret', 'galti', 'went wrong', 'learned'],
     answer:
-      "Two big ones. In my NDA year I had no backup plan — I didn't prepare for JEE in parallel, and it cost me a full year. And I practised DSA with no clock, so contest pressure hurt; now I time-box every problem.",
-    receipts: ['ssb', 'codolio'],
-  },
-  {
-    id: 'nda',
-    keywords: ['nda', 'ssb', 'defence', 'defense', 'army', 'not on your resume', 'discipline'],
-    answer:
-      "My 2022–23 NDA year isn't on my resume. I cleared the written exams and sat several SSBs. I wasn't recommended, but that year built my discipline, time management, team play and leadership.",
-    receipts: ['ssb'],
+      'MeterMind. I built on the assumption that electricity meters are still read by hand — research showed smart meters and optical probes, so I had to reframe it around water, gas and factory sub-meters. Lesson: validate the problem before building.',
+    receipts: ['metermind'],
   },
   {
     id: 'stuck',
@@ -113,15 +106,15 @@ export const INTENTS: readonly Intent[] = [
   },
   {
     id: 'day-one',
-    keywords: ['day one', 'first week', 'what would you do', 'plan', 'electrothon 9', 'partner', 'campus'],
+    keywords: ['day one', 'first week', 'what would you do', 'idea', 'partner', 'campus'],
     answer:
-      'Day one: as Developer Relations Lead at SPEC I can bring Wispr Flow to Electrothon 9.0 as a partner — a national hackathon full of student builders, exactly the people who would love building by voice. College tech societies are an untapped channel, and I already have a foot in that door.',
+      'An idea, not a promise: college hackathons are full of student builders — exactly the people who would enjoy building by voice. I would love to explore something like that with my SPEC team; it would be a team decision.',
     receipts: ['spec', 'electrothon-8'],
   },
   {
     id: 'dsa',
     keywords: ['dsa', 'leetcode', 'problems', 'competitive', 'gfg', 'geeksforgeeks'],
-    answer: '600+ problems across LeetCode and GeeksforGeeks. Lesson learned the hard way: solve with a timer, not without one.',
+    answer: '600+ problems across LeetCode and GeeksforGeeks.',
     receipts: ['codolio', 'dsa-sheet'],
   },
   {
@@ -132,21 +125,15 @@ export const INTENTS: readonly Intent[] = [
   },
   {
     id: 'cant-do',
-    keywords: ['cant do', "can't do", "can't you do", 'cannot do', 'not yet', 'weakness', 'weak', 'not good at', 'bad at', 'learn next', 'video editing', 'stock'],
+    keywords: ['cant do', "can't do", "can't you do", 'cannot do', 'not yet', 'weakness', 'weak', 'not good at', 'bad at', 'learn next'],
     answer:
-      "Things I can't do yet: stock-market investing, video editing and design, and any foreign language — I speak Hindi and English. I have no receipts for paid ads or owning a marketing channel, so I won't claim them.",
+      "I have no receipts for running paid ads, owning a marketing channel or influencer marketing — so I won't claim them.",
     receipts: [],
   },
   {
     id: 'languages',
     keywords: ['language', 'languages', 'speak', 'hindi', 'english', 'bhasha'],
-    answer: 'Hindi and English. I want to pick up a foreign language in the summer holidays — no receipt for that yet.',
-    receipts: [],
-  },
-  {
-    id: 'grant',
-    keywords: ['3000', '3,000', 'grant', 'setup', 'macbook', 'laptop'],
-    answer: 'A proper setup in my hostel room — a new laptop like a MacBook and a bigger screen.',
+    answer: 'Hindi and English.',
     receipts: [],
   },
   {
@@ -187,8 +174,8 @@ export const INTENTS: readonly Intent[] = [
     id: 'education',
     keywords: ['college', 'education', 'study', 'studying', 'university', 'degree', 'nit', 'hamirpur', 'btech', 'b.tech', 'year'],
     answer:
-      "Third-year B.Tech in Electronics & Communication at NIT Hamirpur, batch 2024–28, CGPA 8.94. I got in after a second drop for JEE — 99th percentile.",
-    receipts: ['cgpa', 'jee'],
+      "Third-year B.Tech in Electronics & Communication at NIT Hamirpur, batch 2024–28, CGPA 8.94.",
+    receipts: ['cgpa'],
   },
   {
     id: 'hackathons',
@@ -201,15 +188,15 @@ export const INTENTS: readonly Intent[] = [
     id: 'why-hire',
     keywords: ['why hire', 'why should we hire', 'hire you', 'why you', 'stand out', 'fit', 'tumhe kyu'],
     answer:
-      "Because I ship and I don't oversell it. I built a Hinglish voice assistant, so I know voice in India firsthand; I've already done partnerships and brand for a national hackathon; and I built this whole site by voice in one night. On day one I can bring Wispr to Electrothon 9.0.",
+      "Because I ship and I don't oversell it. I built a Hinglish voice assistant, so I know voice in India firsthand; I've been part of the team behind a national hackathon's partnerships and brand; and I built this whole site by voice.",
     receipts: ['nova', 'electrothon-8', 'this-repo'],
   },
   {
     id: 'strengths',
     keywords: ['strength', 'strengths', 'good at', 'best quality', 'superpower'],
     answer:
-      'Ownership and root-cause thinking. I ran four hackathons alongside an internship and classes, and when SeniorSays users complained I fixed the cause — a live slug check — not the error message. My NDA year gave me the discipline for it.',
-    receipts: ['kin', 'seniorsays', 'ssb'],
+      'Ownership and root-cause thinking. I ran four hackathons alongside an internship and classes, and when SeniorSays users complained I fixed the cause — a live slug check — not the error message.',
+    receipts: ['kin', 'seniorsays'],
   },
   {
     id: 'ai',
@@ -222,8 +209,8 @@ export const INTENTS: readonly Intent[] = [
     id: 'leadership',
     keywords: ['leadership', 'lead', 'team', 'teamwork', 'manage people', 'mentor'],
     answer:
-      "I trained a 27-member team on DSA and full-stack at SPEC, I'm Co-Coordinator of the Alumni Cell, and Legal Sarthi was a team build — that's where I learned rebase vs merge the hard way. The NDA year taught me to be a team player first.",
-    receipts: ['spec', 'legal-sarthi', 'ssb'],
+      "I trained a 27-member team on DSA and full-stack at SPEC, I'm Co-Coordinator of the Alumni Cell, and Legal Sarthi was a team build — that's where I learned rebase vs merge the hard way.",
+    receipts: ['spec', 'legal-sarthi'],
   },
   {
     id: 'contact',
