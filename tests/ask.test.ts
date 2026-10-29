@@ -1,5 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import {
+  DEFAULT_BASE_URL,
+  DEFAULT_MODEL,
   MAX_QUESTION_LENGTH,
   askTwin,
   buildMessages,
@@ -94,5 +96,27 @@ describe('createRateLimiter', () => {
     expect(allow('a', 20)).toBe(false);
     expect(allow('b', 20)).toBe(true);
     expect(allow('a', 1011)).toBe(true);
+  });
+});
+
+describe('askTwin request shape', () => {
+  const bodyOf = (fetchImpl: ReturnType<typeof llmReply>) =>
+    JSON.parse((fetchImpl.mock.calls[0] as unknown as [string, RequestInit])[1].body as string);
+
+  it('treats empty env values as unset', async () => {
+    const fetchImpl = llmReply('{"answer":"ok","receipts":[]}');
+    await askTwin('hi', { apiKey: 'k', baseUrl: '', model: '' }, fetchImpl);
+    expect((fetchImpl.mock.calls[0] as unknown as [string])[0]).toBe(`${DEFAULT_BASE_URL}/chat/completions`);
+    expect(bodyOf(fetchImpl).model).toBe(DEFAULT_MODEL);
+  });
+
+  it('asks reasoning models to think briefly, and leaves others alone', async () => {
+    const oss = llmReply('{"answer":"ok","receipts":[]}');
+    await askTwin('hi', { apiKey: 'k', model: 'openai/gpt-oss-120b' }, oss);
+    expect(bodyOf(oss).reasoning_effort).toBe('low');
+
+    const other = llmReply('{"answer":"ok","receipts":[]}');
+    await askTwin('hi', { apiKey: 'k', model: 'qwen/qwen3.8-27b' }, other);
+    expect(bodyOf(other)).not.toHaveProperty('reasoning_effort');
   });
 });
