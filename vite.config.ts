@@ -1,6 +1,6 @@
 import react from '@vitejs/plugin-react';
 import { loadEnv, type Plugin } from 'vite';
-import { defineConfig } from 'vitest/config';
+import { configDefaults, defineConfig } from 'vitest/config';
 
 function localApi(): Plugin {
   return {
@@ -32,6 +32,7 @@ export default defineConfig(({ mode }) => {
     test: {
       environment: 'node',
       testTimeout: 15_000,
+      exclude: [...configDefaults.exclude, 'e2e/**'],
     },
   };
 });
