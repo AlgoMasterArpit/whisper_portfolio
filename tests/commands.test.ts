@@ -72,3 +72,30 @@ describe('speak command', () => {
     expect(parseCommand('do you speak german')).toBeNull();
   });
 });
+
+describe('voice edge cases', () => {
+  it.each([
+    ['MUSEUM!!!', 'museum'],
+    ['please, open the growth lab.', 'growth'],
+    ['  upar  ', 'top'],
+    ['गलतियाँ दिखाओ', 'museum'],
+    ['ग्रोथ लैब', 'growth'],
+    ['खेल', 'game'],
+    ['ऊपर जाओ', 'top'],
+  ])('“%s” → %s', (said, section) => {
+    expect(parseCommand(said)).toEqual({ type: 'goto', section });
+  });
+
+  it('asks in Devanagari too', () => {
+    expect(parseCommand('पूछो सबसे बड़ा रिस्क')).toEqual({ type: 'ask', question: 'सबसे बड़ा रिस्क' });
+  });
+
+  it('does not treat words that merely contain a keyword as commands', () => {
+    expect(parseCommand('playstation')).toBeNull();
+    expect(parseCommand('stopwatch')).toBeNull();
+  });
+
+  it('treats Devanagari questions as questions', () => {
+    expect(looksLikeQuestion('क्या तुमने ads चलाए')).toBe(true);
+  });
+});
