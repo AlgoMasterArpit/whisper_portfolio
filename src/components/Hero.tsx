@@ -12,6 +12,7 @@ interface Props {
   interim: string;
   heard: string;
   voiceError: string | null;
+  speaking: boolean;
   onTalk: () => void;
   onStop: () => void;
 }
@@ -24,8 +25,9 @@ const LINES: readonly [string, string][] = [
   ['Words spoken to build this', WORDS_SPOKEN.toLocaleString('en-IN')],
 ];
 
-export function Hero({ readSpectrum, motion, listening, interim, heard, voiceError, onTalk, onStop }: Props) {
+export function Hero({ readSpectrum, motion, listening, interim, heard, voiceError, speaking, onTalk, onStop }: Props) {
   const live = listening === 'command';
+  const label = live ? 'Listening — tap to stop' : speaking ? 'Speaking — tap to stop' : 'Talk to this page';
   return (
     <header id="top" className="hero">
       <VoiceRidge readSpectrum={readSpectrum} motion={motion} />
@@ -41,9 +43,9 @@ export function Hero({ readSpectrum, motion, listening, interim, heard, voiceErr
             Every claim on this page links to proof — or admits it has none. Ask me anything, out loud.
           </p>
           <div className="hero__actions">
-            <button type="button" className={`btn btn--mic ${live ? 'is-live' : ''}`} onClick={live ? onStop : onTalk}>
+            <button type="button" className={`btn btn--mic ${live || speaking ? 'is-live' : ''}`} onClick={live ? onStop : onTalk}>
               <span className="btn__dot" aria-hidden="true" />
-              {live ? 'Listening — tap to stop' : 'Talk to this page'}
+              {label}
             </button>
             <a className="btn btn--ghost" href="#ask">
               Ask the twin ↓
