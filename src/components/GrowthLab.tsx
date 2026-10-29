@@ -43,7 +43,7 @@ export function GrowthLab() {
           </h2>
           <p className="lede">
             My best moments weren’t writing code — they were getting things in front of people. Here’s the evidence, an
-            offer, and a live experiment.
+            idea, and a live experiment.
           </p>
         </div>
 
