@@ -13,7 +13,7 @@ export interface TwinEnv {
 }
 
 export const DEFAULT_BASE_URL = 'https://api.groq.com/openai/v1';
-export const DEFAULT_MODEL = 'llama-3.3-70b-versatile';
+export const DEFAULT_MODEL = 'openai/gpt-oss-120b';
 
 export type QuestionResult = { question: string } | { error: string };
 
@@ -67,16 +67,18 @@ export function parseTwinReply(content: string): Answer | null {
 
 export async function askTwin(question: string, env: TwinEnv, fetchImpl: typeof fetch = fetch): Promise<Answer> {
   if (!env.apiKey) return matchOffline(question);
+  const model = env.model || DEFAULT_MODEL;
   try {
-    const res = await fetchImpl(`${env.baseUrl ?? DEFAULT_BASE_URL}/chat/completions`, {
+    const res = await fetchImpl(`${env.baseUrl || DEFAULT_BASE_URL}/chat/completions`, {
       method: 'POST',
       headers: { 'content-type': 'application/json', authorization: `Bearer ${env.apiKey}` },
       body: JSON.stringify({
-        model: env.model ?? DEFAULT_MODEL,
+        model,
         messages: buildMessages(question),
         temperature: 0.3,
-        max_tokens: 350,
+        max_tokens: 800,
         response_format: { type: 'json_object' },
+        ...(model.includes('gpt-oss') && { reasoning_effort: 'low' }),
       }),
       signal: AbortSignal.timeout(LLM_TIMEOUT_MS),
     });
