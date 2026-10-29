@@ -1,6 +1,7 @@
-import { askTwin, createRateLimiter, readQuestion } from '../shared/ask.js';
+import { askTwin, createAnswerCache, createRateLimiter, readQuestion } from '../shared/ask.js';
 
 const allow = createRateLimiter(20, 60_000);
+const cache = createAnswerCache(200, 60 * 60_000);
 
 export async function POST(request: Request): Promise<Response> {
   const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
@@ -18,10 +19,13 @@ export async function POST(request: Request): Promise<Response> {
   const result = readQuestion(body);
   if ('error' in result) return Response.json(result, { status: 400 });
 
-  const answer = await askTwin(result.question, {
-    apiKey: process.env.LLM_API_KEY,
-    baseUrl: process.env.LLM_BASE_URL,
-    model: process.env.LLM_MODEL,
-  });
+  const answer =
+    cache.get(result.question) ??
+    (await askTwin(result.question, {
+      apiKey: process.env.LLM_API_KEY,
+      baseUrl: process.env.LLM_BASE_URL,
+      model: process.env.LLM_MODEL,
+    }));
+  cache.set(result.question, answer);
   return Response.json(answer, { headers: { 'cache-control': 'no-store' } });
 }
