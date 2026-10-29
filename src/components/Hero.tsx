@@ -13,6 +13,7 @@ interface Props {
   heard: string;
   voiceError: string | null;
   speaking: boolean;
+  paused: boolean;
   onTalk: () => void;
   onStop: () => void;
 }
@@ -25,9 +26,15 @@ const LINES: readonly [string, string][] = [
   ['Words spoken to build this', WORDS_SPOKEN.toLocaleString('en-IN')],
 ];
 
-export function Hero({ readSpectrum, motion, listening, interim, heard, voiceError, speaking, onTalk, onStop }: Props) {
+export function Hero({ readSpectrum, motion, listening, interim, heard, voiceError, speaking, paused, onTalk, onStop }: Props) {
   const live = listening === 'command';
-  const label = live ? 'Listening — tap to stop' : speaking ? 'Speaking — tap to stop' : 'Talk to this page';
+  const label = speaking
+    ? 'Speaking — tap to stop'
+    : live && paused
+      ? 'Thinking — tap to stop'
+      : live
+        ? 'Listening — tap to stop'
+        : 'Talk to this page';
   return (
     <header id="top" className="hero">
       <VoiceRidge readSpectrum={readSpectrum} motion={motion} />
