@@ -31,8 +31,6 @@ export const RECEIPTS: readonly Receipt[] = [
   { id: 'this-repo', label: 'Source of this site', kind: 'public', url: `${GH}/whisper_portfolio` },
   { id: 'raw-tape', label: 'Raw voice transcripts', kind: 'public', url: '#tape', note: 'unedited Wispr Flow takes on this page' },
   { id: 'cgpa', label: 'CGPA 8.94', kind: 'self-reported', note: 'transcript on request' },
-  { id: 'jee', label: 'JEE — 99th percentile', kind: 'self-reported', note: 'scorecard on request' },
-  { id: 'ssb', label: 'NDA written + SSB attempts', kind: 'self-reported', note: 'call letters on request' },
   { id: 'sih', label: 'SIH internal round — top 13 of ~100', kind: 'self-reported', note: 'NIT Hamirpur internal round' },
   { id: 'carboledger', label: 'Carboledger internship', kind: 'self-reported', note: 'listed on LinkedIn, offer letter on request' },
 ];
