@@ -48,3 +48,12 @@ describe('Hinglish questions', () => {
     expect(titlesIn(selectContext(question))).toContain(title);
   });
 });
+
+describe('skills questions', () => {
+  it.each(['What is your tech stack?', 'Which skills do you have?', 'Do you know FastAPI?', 'Tumhe kaunsi languages aati hain?'])(
+    '“%s” pulls in the skills section',
+    (question) => {
+      expect(titlesIn(selectContext(question))).toContain('Skills and tech stack');
+    },
+  );
+});
