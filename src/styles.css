@@ -585,6 +585,7 @@ button {
 
 .hero__receipt {
   position: relative;
+  margin: 0;
   padding-top: 14px;
   justify-self: end;
   width: min(100%, 380px);
