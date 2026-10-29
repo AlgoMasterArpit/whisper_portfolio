@@ -21,8 +21,11 @@ class FakeRecognition {
   start() {
     this.started++;
   }
+  aborted = 0;
   stop() {}
-  abort() {}
+  abort() {
+    this.aborted++;
+  }
   say(text: string) {
     this.onresult?.({ resultIndex: 0, results: { length: 1, 0: { isFinal: true, length: 1, 0: { transcript: text } } } });
   }
@@ -113,5 +116,53 @@ describe('useVoice on a laptop', () => {
     act(() => FakeRecognition.last.onend?.());
     expect(FakeRecognition.last.started).toBe(2);
     expect(result.current.readSpectrum()).not.toBeNull();
+  });
+});
+
+describe('no echo: the mic is held while the twin answers', () => {
+  it.each([
+    ['laptop', DESKTOP],
+    ['phone', ANDROID],
+  ])('on a %s, stops listening after a question and ignores the spoken answer', async (_name, ua) => {
+    setUp(ua);
+    const heard: string[] = [];
+    const { result } = renderHook(() => useVoice((t) => heard.push(t)));
+    await act(() => result.current.start('command'));
+    const rec = FakeRecognition.last;
+
+    act(() => rec.say('tell me about your internship'));
+    expect(heard).toEqual(['tell me about your internship']);
+    expect(result.current.paused).toBe(true);
+    expect(rec.aborted).toBe(1);
+
+    act(() => rec.say('Carboledger is a supply chain compliance platform'));
+    act(() => rec.onend?.());
+    expect(heard).toEqual(['tell me about your internship']);
+    expect(rec.started).toBe(1);
+    expect(result.current.listening).toBe('command');
+  });
+
+  it('listens again for the next question once released', async () => {
+    setUp(ANDROID);
+    const heard: string[] = [];
+    const { result } = renderHook(() => useVoice((t) => heard.push(t)));
+    await act(() => result.current.start('command'));
+    const rec = FakeRecognition.last;
+    act(() => rec.say('first question'));
+    act(() => rec.onend?.());
+    act(() => result.current.release());
+    expect(result.current.paused).toBe(false);
+    expect(rec.started).toBe(2);
+    act(() => rec.say('second question'));
+    expect(heard).toEqual(['first question', 'second question']);
+  });
+
+  it('turning the mic off clears the hold so the next tap starts fresh', async () => {
+    setUp(DESKTOP);
+    const { result } = renderHook(() => useVoice(() => {}));
+    await act(() => result.current.start('command'));
+    act(() => FakeRecognition.last.say('hello there friend'));
+    act(() => result.current.stop());
+    expect(result.current).toMatchObject({ listening: null, paused: false });
   });
 });
