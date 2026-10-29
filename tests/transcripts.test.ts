@@ -50,9 +50,9 @@ describe('parseBrainDump', () => {
 
   it('parses the real brain dump', () => {
     const real = parseBrainDump(readFileSync(new URL('../content/brain-dump.md', import.meta.url), 'utf8'));
-    expect(real.length).toBeGreaterThanOrEqual(9);
+    expect(real.map((q) => q.id)).toEqual(['q1', 'q2', 'q6', 'q7']);
     expect(real.every((q) => q.takes.length > 0)).toBe(true);
-    expect(countWords(real)).toBeGreaterThan(2000);
+    expect(countWords(real)).toBeGreaterThan(1500);
   });
 });
 
@@ -69,5 +69,13 @@ describe('firstSentences', () => {
 
   it('returns text with no punctuation as is', () => {
     expect(firstSentences('no punctuation here')).toBe('no punctuation here');
+  });
+});
+
+describe('what the public brain dump leaves out', () => {
+  const raw = readFileSync(new URL('../content/brain-dump.md', import.meta.url), 'utf8');
+
+  it('has no drop-year, NDA, DSA-timing or personal-plan content', () => {
+    expect(raw).not.toMatch(/\bNDA\b|\bSSB\b|second drop|percentile|stock market|\$3,000|time-driven/i);
   });
 });
