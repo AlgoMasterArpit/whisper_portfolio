@@ -99,3 +99,18 @@ describe('voice edge cases', () => {
     expect(looksLikeQuestion('क्या तुमने ads चलाए')).toBe(true);
   });
 });
+
+describe('spoken questions are not mistaken for navigation', () => {
+  it.each(['rate me your tech skills', 'What projects have you built', 'tell me about your work at carboledger', 'explain your growth experiment'])(
+    '“%s” is a question, not a command',
+    (said) => {
+      expect(parseCommand(said)).toBeNull();
+      expect(looksLikeQuestion(said)).toBe(true);
+    },
+  );
+
+  it('still navigates on short commands and explicit verbs', () => {
+    expect(parseCommand('projects')).toEqual({ type: 'goto', section: 'ledger' });
+    expect(parseCommand('open my projects please')).toEqual({ type: 'goto', section: 'ledger' });
+  });
+});
