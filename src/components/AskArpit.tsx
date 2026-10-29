@@ -1,4 +1,5 @@
-import { useState, type FormEvent } from 'react';
+import { useEffect, useRef, useState, type FormEvent } from 'react';
+import { canSpeak, speak } from '../lib/speak';
 import type { Entry } from '../lib/useAsk';
 import { RawStrip } from './RawStrip';
 import { ProofList, Receipt, Stamp } from './Receipt';
@@ -19,10 +20,21 @@ interface Props {
   interim: string;
   onDictate: () => void;
   onStopDictate: () => void;
+  speakOn: boolean;
+  onSpeak: (on: boolean) => void;
 }
 
-export function AskArpit({ entries, busy, onAsk, dictating, interim, onDictate, onStopDictate }: Props) {
+export function AskArpit({ entries, busy, onAsk, dictating, interim, onDictate, onStopDictate, speakOn, onSpeak }: Props) {
   const [draft, setDraft] = useState('');
+  const [voiceOut] = useState(canSpeak);
+  const spoken = useRef(0);
+  const latest = entries[0];
+
+  useEffect(() => {
+    if (!speakOn || !latest?.answer || latest.id <= spoken.current) return;
+    spoken.current = latest.id;
+    speak(latest.answer.text);
+  }, [speakOn, latest]);
 
   const submit = (event: FormEvent) => {
     event.preventDefault();
@@ -82,6 +94,15 @@ export function AskArpit({ entries, busy, onAsk, dictating, interim, onDictate, 
               </li>
             ))}
           </ul>
+
+          {voiceOut && (
+            <button type="button" className="switch ask__speak" aria-pressed={speakOn} onClick={() => onSpeak(!speakOn)}>
+              <span className="switch__track" aria-hidden="true">
+                <span className="switch__thumb" />
+              </span>
+              Read answers aloud
+            </button>
+          )}
         </div>
 
         <div className="printer" aria-live="polite" aria-busy={busy}>
@@ -95,7 +116,7 @@ export function AskArpit({ entries, busy, onAsk, dictating, interim, onDictate, 
           )}
           <div className="printer__feed">
             {entries.map((entry) => (
-              <AnswerReceipt key={entry.id} entry={entry} />
+              <AnswerReceipt key={entry.id} entry={entry} voiceOut={voiceOut} />
             ))}
           </div>
         </div>
@@ -104,7 +125,7 @@ export function AskArpit({ entries, busy, onAsk, dictating, interim, onDictate, 
   );
 }
 
-function AnswerReceipt({ entry }: { entry: Entry }) {
+function AnswerReceipt({ entry, voiceOut }: { entry: Entry; voiceOut: boolean }) {
   const { answer, error } = entry;
   return (
     <Receipt heading="Answer" no={String(entry.id).padStart(4, '0')} className="answer">
@@ -116,7 +137,14 @@ function AnswerReceipt({ entry }: { entry: Entry }) {
           <p className="answer__text">{answer.text}</p>
           <ProofList receipts={answer.receipts} />
           <div className="answer__foot">
-            <span>{answer.source === 'twin' ? 'AI twin · from my words' : 'Offline · my own answers'}</span>
+            <span>
+              {answer.source === 'twin' ? 'AI twin · from my words' : 'Offline · my own answers'}
+              {voiceOut && (
+                <button type="button" className="answer__play" onClick={() => speak(answer.text)}>
+                  ▶ Read aloud
+                </button>
+              )}
+            </span>
             <Stamp verdict={answer.verdict} />
           </div>
         </>
