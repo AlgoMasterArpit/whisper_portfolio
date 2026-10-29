@@ -55,3 +55,20 @@ describe('looksLikeQuestion', () => {
     expect(looksLikeQuestion(t)).toBe(false);
   });
 });
+
+describe('speak command', () => {
+  it.each([
+    ['bolke sunao', true],
+    ['read aloud', true],
+    ['read aloud off', false],
+    ['mute', false],
+    ['unmute', true],
+    ['sunao mat, band karo', false],
+  ])('“%s” → %s', (said, on) => {
+    expect(parseCommand(said)).toEqual({ type: 'speak', on });
+  });
+
+  it('does not hijack questions that merely mention speaking', () => {
+    expect(parseCommand('do you speak german')).toBeNull();
+  });
+});
