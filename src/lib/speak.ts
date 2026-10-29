@@ -33,11 +33,25 @@ export function canSpeak(): boolean {
   return typeof window !== 'undefined' && 'speechSynthesis' in window && typeof SpeechSynthesisUtterance !== 'undefined';
 }
 
-export function speak(text: string): void {
+export function loadVoices(timeoutMs = 1000): Promise<SpeechSynthesisVoice[]> {
+  const synth = window.speechSynthesis;
+  const now = synth.getVoices();
+  if (now.length) return Promise.resolve(now);
+  return new Promise((resolve) => {
+    const done = () => {
+      synth.removeEventListener?.('voiceschanged', done);
+      resolve(synth.getVoices());
+    };
+    synth.addEventListener?.('voiceschanged', done);
+    setTimeout(done, timeoutMs);
+  });
+}
+
+export async function speak(text: string): Promise<void> {
   if (!canSpeak()) return;
   window.speechSynthesis.cancel();
   const utterance = new SpeechSynthesisUtterance(text);
-  const voice = pickVoice(window.speechSynthesis.getVoices());
+  const voice = pickVoice(await loadVoices());
   if (voice) {
     utterance.voice = voice;
     utterance.lang = voice.lang;
