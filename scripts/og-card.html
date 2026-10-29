@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>OG card source</title>
+    <style>
+      @font-face {
+        font-family: 'Bricolage Grotesque';
+        font-weight: 400 800;
+        src: url('/fonts/bricolage-grotesque.woff2') format('woff2');
+      }
+      @font-face {
+        font-family: 'Instrument Serif';
+        font-style: italic;
+        src: url('/fonts/instrument-serif-italic.woff2') format('woff2');
+      }
+      @font-face {
+        font-family: 'JetBrains Mono';
+        font-weight: 400 700;
+        src: url('/fonts/jetbrains-mono.woff2') format('woff2');
+      }
+      html,
+      body {
+        margin: 0;
+        width: 1200px;
+        height: 630px;
+        overflow: hidden;
+        background: #0e0d0b;
+      }
+      .card {
+        position: relative;
+        width: 1200px;
+        height: 630px;
+        padding: 64px 72px;
+        box-sizing: border-box;
+        display: grid;
+        grid-template-columns: 1fr 340px;
+        gap: 48px;
+        align-items: center;
+        color: #f3eee2;
+        font-family: 'Bricolage Grotesque', sans-serif;
+      }
+      .ridge {
+        position: absolute;
+        inset: 0;
+        opacity: 0.35;
+      }
+      .copy {
+        position: relative;
+      }
+      .kicker {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 18px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: #a8a193;
+      }
+      h1 {
+        margin: 18px 0 0;
+        font-size: 92px;
+        line-height: 0.9;
+        letter-spacing: -0.045em;
+        font-weight: 800;
+      }
+      h1 span {
+        display: block;
+        margin-top: 8px;
+        font-family: 'Instrument Serif', serif;
+        font-style: italic;
+        font-weight: 400;
+        color: #d4472c;
+      }
+      .receipt {
+        position: relative;
+        padding: 26px 26px 38px;
+        background: #f3eee2;
+        color: #1a1814;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 17px;
+        line-height: 1.7;
+        rotate: 2deg;
+        mask:
+          conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) bottom / 24px 12px repeat-x,
+          linear-gradient(#000 0 0) top / 100% calc(100% - 12px) no-repeat;
+      }
+      .receipt header {
+        display: flex;
+        justify-content: space-between;
+        padding-bottom: 12px;
+        margin-bottom: 12px;
+        border-bottom: 1px dashed;
+        font-size: 13px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+      .line {
+        display: flex;
+        gap: 8px;
+      }
+      .line i {
+        flex: 1;
+        border-bottom: 1px dotted;
+        translate: 0 -6px;
+        opacity: 0.5;
+      }
+      .line b {
+        font-weight: 700;
+      }
+      .stamp {
+        display: inline-block;
+        margin-top: 18px;
+        padding: 6px 14px;
+        border: 3px solid #2f7d4f;
+        border-radius: 6px;
+        color: #2f7d4f;
+        font-weight: 700;
+        letter-spacing: 0.16em;
+        rotate: -7deg;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <svg class="ridge" viewBox="0 0 1200 630" preserveAspectRatio="none" aria-hidden="true"></svg>
+      <div class="copy">
+        <div class="kicker">Arpit Tyagi · built by voice</div>
+        <h1>Don’t trust my resume.<span>Check my receipts.</span></h1>
+      </div>
+      <div class="receipt">
+        <header><span>Receipts</span><span>#0001</span></header>
+        <div class="line"><span>NOVA</span><i></i><b>Hinglish voice</b></div>
+        <div class="line"><span>Legal Sarthi</span><i></i><b>LLM + law</b></div>
+        <div class="line"><span>Electrothon</span><i></i><b>500+ users</b></div>
+        <div class="line"><span>Ask the twin</span><i></i><b>live</b></div>
+        <span class="stamp">VERIFIED</span>
+      </div>
+    </div>
+    <script>
+      const svg = document.querySelector('.ridge');
+      const rows = 22;
+      for (let r = 0; r < rows; r++) {
+        const y0 = 120 + r * 22;
+        let d = `M0 ${y0}`;
+        for (let i = 0; i <= 80; i++) {
+          const x = (i / 80) * 1200;
+          const env = Math.exp(-((((i / 80) * 2 - 1.1) * 2.2) ** 2));
+          const wave = (Math.sin(i * 0.5 + r) + Math.sin(i * 0.17 - r * 0.6)) * 0.5 + 0.5;
+          d += ` L${x.toFixed(1)} ${(y0 - wave * env * 70 * (0.3 + (0.7 * r) / rows)).toFixed(1)}`;
+        }
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('d', d);
+        path.setAttribute('fill', 'none');
+        path.setAttribute('stroke', '#f3eee2');
+        path.setAttribute('stroke-opacity', String(0.15 + (0.85 * r) / rows));
+        svg.appendChild(path);
+      }
+    </script>
+  </body>
+</html>
