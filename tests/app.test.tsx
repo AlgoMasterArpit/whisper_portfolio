@@ -153,3 +153,39 @@ describe('Keyboard', () => {
     expect(screen.getByText(/mic is blocked/i)).toBeTruthy();
   });
 });
+
+describe('Troy voice', () => {
+  it('plays the server voice and skips the robotic browser voice when audio comes back', async () => {
+    const played: string[] = [];
+    const browserSpoke: string[] = [];
+    vi.stubGlobal('speechSynthesis', { cancel() {}, getVoices: () => [], speak: (u: { text: string }) => browserSpoke.push(u.text) });
+    vi.stubGlobal('SpeechSynthesisUtterance', class {});
+    vi.stubGlobal(
+      'Audio',
+      class {
+        constructor(public src: string) {}
+        pause() {}
+        play() {
+          played.push(this.src);
+          return Promise.resolve();
+        }
+      },
+    );
+    vi.stubGlobal('URL', Object.assign(Object.create(URL), { createObjectURL: () => 'blob:troy' }));
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async (url: string) =>
+        url === '/api/speak'
+          ? new Response(new Uint8Array([1, 2]), { headers: { 'content-type': 'audio/wav' } })
+          : Response.json({ text: 'Troy here.', receipts: [], verdict: 'no-receipt', source: 'twin' }),
+      ),
+    );
+    render(<App />);
+    fireEvent.click(screen.getByRole('button', { name: /read answers aloud/i }));
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'Sabse bada risk kya liya?' }));
+    });
+    await waitFor(() => expect(played).toEqual(['blob:troy']));
+    expect(browserSpoke).toEqual([]);
+  });
+});
