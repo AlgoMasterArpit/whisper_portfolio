@@ -27,7 +27,12 @@ export function normalize(text: string): string {
 
 export function stem(word: string): string {
   if (word.length <= 4) return word;
-  return word.replace(/(ings|ing|ies|es|ed|s)$/, '');
+  if (word.endsWith('ies')) return `${word.slice(0, -3)}y`;
+  if (/(ss|x|z|ch|sh)es$/.test(word)) return word.slice(0, -2);
+  if (word.endsWith('ing')) return word.slice(0, -3);
+  if (word.endsWith('ed')) return word.slice(0, -2);
+  if (word.endsWith('s') && !word.endsWith('ss')) return word.slice(0, -1);
+  return word;
 }
 
 export function tokenize(text: string): string[] {
