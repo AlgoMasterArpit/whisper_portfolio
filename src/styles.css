@@ -120,6 +120,8 @@ button {
 .section {
   position: relative;
   padding-block: clamp(80px, 12vw, 160px);
+  content-visibility: auto;
+  contain-intrinsic-size: auto 1000px;
 }
 
 .kicker {
