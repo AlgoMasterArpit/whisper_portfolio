@@ -30,7 +30,7 @@ export const LEDGER: readonly LedgerGroup[] = [
         tag: 'DevRel Lead',
         when: 'Aug 2024 →',
         lines: [
-          'Brought speakers and judges to Electrothon 7.0 and 8.0; grew the brand nationally.',
+          'Part of the SPEC team that brought speakers and judges to Electrothon 7.0 and 8.0 and grew its national reach.',
           'Real-time infra dashboard for Electrothon 8.0 — 500+ participants.',
           'Trained a 27-member team on DSA and full-stack. Co-Coordinator, Alumni Cell.',
         ],
@@ -93,8 +93,8 @@ export const LEDGER: readonly LedgerGroup[] = [
   {
     title: 'Record',
     items: [
-      { name: 'B.Tech ECE, NIT Hamirpur', tag: 'CGPA 8.94', when: '2024–28', lines: ['After a second drop and the 99th percentile in JEE.'], receipts: ['cgpa', 'jee'] },
-      { name: 'DSA', tag: '600+ solved', when: 'ongoing', lines: ['LeetCode and GeeksforGeeks — now always on a timer.'], receipts: ['codolio', 'dsa-sheet'] },
+      { name: 'B.Tech ECE, NIT Hamirpur', tag: 'CGPA 8.94', when: '2024–28', lines: ['Electronics & Communication Engineering, batch of 2028.'], receipts: ['cgpa'] },
+      { name: 'DSA', tag: '600+ solved', when: 'ongoing', lines: ['LeetCode and GeeksforGeeks.'], receipts: ['codolio', 'dsa-sheet'] },
       { name: 'Smart India Hackathon', tag: 'Top 13 / ~100', when: 'internal round', lines: ['NIT Hamirpur internal round.'], receipts: ['sih'] },
     ],
   },
