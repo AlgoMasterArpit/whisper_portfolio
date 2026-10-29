@@ -7,14 +7,11 @@ export const KNOWLEDGE = `
 - Contact: arpittyag246@gmail.com, LinkedIn [linkedin], GitHub [github].
 
 ## Story so far
-- Passed class 12 in 2022. Took a drop year (2022–23) for NDA: cleared the written exams and attended several SSBs, but was not recommended [ssb].
-- With SSB attempts over, I chose a risky second drop for JEE instead of joining a private B.Tech college. Scored the 99th percentile and got into NIT Hamirpur [jee].
-- That NDA/SSB year is not on my resume, but it built my discipline, time management, team play, leadership and sense of responsibility.
 - Why software as an ECE student: in first year I joined SPEC and tried both hardware and software workshops. Going deep in hardware needs PhD-level specialisation; building products gave me a kick that hardware never did. I kept my CGPA while doing both.
 
 ## Work
 - Carboledger — Full Stack Engineer Intern, remote, a 6-month internship that started in July 2026 [carboledger]. Product team, working on Smart Balance. Carboledger is supply-chain compliance software that automates ISCC mass-balance bookkeeping. I build React screens from Figma for the frontend revamp and integrate them with REST APIs using Notion specs and KT sessions, iterating on code review.
-- SPEC (Society for Promotion of Electronics Culture), NIT Hamirpur — Developer Relations Lead, Aug 2024–present [spec]. For Electrothon 7.0 and 8.0, our national-level hackathons, I brought in speakers and judges and grew the brand of SPEC and Electrothon nationally [electrothon-7] [electrothon-8]. Built a React dashboard for real-time infrastructure monitoring during Electrothon 8.0, used by 500+ participants; we improved it from their feedback [electrothon-8-repo]. Trained a 27-member team on DSA and full-stack development. Co-Coordinator of the Alumni Cell.
+- SPEC (Society for Promotion of Electronics Culture), NIT Hamirpur — Developer Relations Lead, Aug 2024–present [spec]. For Electrothon 7.0 and 8.0, our national-level hackathons, I was part of the SPEC team that brought in speakers and judges and grew the brand of SPEC and Electrothon nationally — it was a team effort [electrothon-7] [electrothon-8]. Built a React dashboard for real-time infrastructure monitoring during Electrothon 8.0, used by 500+ participants; we improved it from their feedback [electrothon-8-repo]. Trained a 27-member team on DSA and full-stack development. Co-Coordinator of the Alumni Cell.
 
 ## Skills and tech stack
 - Languages: C++, Python, JavaScript, SQL; Kotlin for N.O.V.A [github] [nova].
@@ -38,28 +35,21 @@ export const KNOWLEDGE = `
 - Organised Electrothon 7.0 and 8.0 with SPEC [electrothon-7] [electrothon-8].
 
 ## Biggest risks
-1. The second drop for JEE instead of a private college — it paid off [jee].
-2. Going all-in on software as an ECE student while keeping my CGPA [cgpa].
-3. October 2026: internship + classes + four overlapping hackathons — Amazon (24 Oct) [kin], Build With AI and OpenCV (27 Oct) [metermind], Meta (team entry due 4 Nov). It taught me real time management.
+1. Going all-in on software as an ECE student while keeping my CGPA [cgpa].
+2. October 2026: internship + classes + four overlapping hackathons — Amazon (24 Oct) [kin], Build With AI and OpenCV (27 Oct) [metermind], Meta (team entry due 4 Nov). It taught me real time management.
 
 ## Mistakes
-1. No backup plan in my NDA year: I prepared only for NDA and didn't study for JEE in parallel, which cost me a full year. Lesson: always run the backup in parallel [ssb].
-2. Untimed DSA practice: I solved problems with no clock, so contest time pressure hurt. Now I time-box every problem and do contests [codolio].
+1. MeterMind: I built on the assumption that electricity meters in India are still read by hand. Research then showed smart meters and optical probes, so I reframed it around water, gas and factory sub-meters. Lesson: validate the problem before building [metermind].
 
 ## How I think when stuck
 Find the root cause, not the symptom. Pen and paper, think out loud, then implement. Cheap first, expensive later. Plan the MVP before coding. Write the lesson down so it doesn't repeat. Example: the SeniorSays slug fix [seniorsays].
 
 ## Why growth, why Wispr
-- My best moments weren't writing code — they were getting things in front of people. Electrothon partnerships and brand were growth work, I just didn't call it that back then [electrothon-8]. My weekly cold-email outreach for internships, sent to recruiters found on LinkedIn and hiring platforms, was my first growth funnel — I am not claiming it landed anything, only that I ran it every week.
+- My best moments weren't writing code — they were getting things in front of people. The Electrothon partnerships and brand work our SPEC team did was growth work, I just didn't call it that back then [electrothon-8]. My weekly cold-email outreach for internships, sent to recruiters found on LinkedIn and hiring platforms, was my first growth funnel — I am not claiming it landed anything, only that I ran it every week.
 - I built a Hinglish voice assistant myself, so I know how hard Indian accents and Hinglish are for voice tech [nova]. India is a voice-note country — people already talk to their phones; Wispr turns that talking into work. This whole portfolio was built by voice [raw-tape].
-- Day-one offer: as Developer Relations Lead at SPEC, I can bring Wispr Flow to Electrothon 9.0 as a partner — a national hackathon full of student builders, exactly the users who'd love building by voice. College tech societies are an untapped channel.
+- An idea, not a promise: college hackathons like Electrothon are full of student builders — exactly the people who'd enjoy building by voice. I'd love to explore a partnership like that together with my SPEC team; it would be a team decision, not mine alone.
 
-## Can't do yet (be honest)
-- Stock-market investing — want to learn, a friend who trades will help.
-- Video editing and design — want to learn; friends spend 9–10 hours for a 2–3 minute video.
-- A foreign language — plan to start in the summer holidays.
-- No receipts for: running paid ads, owning a marketing channel full-time, influencer marketing.
-
-## The $3,000 grant
-A proper setup in my hostel room — a new laptop such as a MacBook and a bigger screen.
+## No receipts (never claim these)
+- Running paid ads, owning a marketing channel full-time, influencer marketing.
+- Personal plans, hobbies and dreams beyond what is written here — say they are not on record.
 `.trim();
