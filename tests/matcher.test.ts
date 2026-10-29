@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { INTENTS, NO_RECEIPT_ANSWER, UNKNOWN_ANSWER } from '../shared/faq';
-import { matchOffline, normalize } from '../shared/matcher';
+import { matchOffline, normalize, stem } from '../shared/matcher';
 import { findReceipt } from '../shared/receipts';
 
 const intentOf = (question: string) => INTENTS.find((i) => i.answer === matchOffline(question).text)?.id;
@@ -106,5 +106,21 @@ describe('recruiter questions', () => {
 
   it('says “not on record” for things I never talked about', () => {
     expect(matchOffline('What is your favourite movie?').text).toBe(UNKNOWN_ANSWER);
+  });
+});
+
+describe('stem', () => {
+  it.each([
+    ['mistakes', 'mistake'],
+    ['mistake', 'mistake'],
+    ['hackathons', 'hackathon'],
+    ['companies', 'company'],
+    ['processes', 'process'],
+    ['building', 'build'],
+    ['worked', 'work'],
+    ['class', 'class'],
+    ['llms', 'llms'],
+  ])('%s → %s', (word, stemmed) => {
+    expect(stem(word)).toBe(stemmed);
   });
 });
